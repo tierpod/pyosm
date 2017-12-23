@@ -24,9 +24,12 @@ class Metatile(object):
 
         self._file = builtins.open(filename, mode)
         self.filename = filename
-        self.header = self._decode_header()
-        self.metadata = self._decode_metadata()
-        self._iter = iter(self.metadata)
+
+        if mode == "rb":
+            self.header = self._decode_header()
+            self.size = round(math.sqrt(self.header.count))
+            self.metadata = self._decode_metadata()
+            self._iter = iter(self.metadata)
 
     def _decode_header(self):
         size = len(META_MAGIC) + 4 * 4
@@ -38,13 +41,12 @@ class Metatile(object):
 
     def _decode_metadata(self):
         metadata = {}
-        size = round(math.sqrt(self.header.count))
       
-        for x in range(size):
-            for y in range(size):
+        for x in range(self.header.x, self.size):
+            for y in range(self.header.y, self.size):
                 data = self._file.read(2 * 4)
-                offset, size_ = struct.unpack("2i", data)
-                metadata[Point(x+size, y+size)] = Metadata(offset, size_)
+                offset, size = struct.unpack("2i", data)
+                metadata[Point(x, y)] = Metadata(offset, size)
 
         return metadata
 
@@ -58,9 +60,39 @@ class Metatile(object):
     def read(self):
         raise NotImplementedError("use readtile() or readtiles() instead")
 
-    def write(self):
-        raise NotImplementedError
-    
+    def write(self, count, x, y, z, data):
+        # data is the {(x, y): bytes}
+        # write header data
+        self._file.write(struct.pack("4s4i", META_MAGIC, count, x, y, z))
+        size = round(math.sqrt(count))
+
+        offset = len(META_MAGIC) + 4 * 4
+        # need to pre-compensate the offsets for the size of the offset/size
+        # table we are about to write
+        offset += (2 * 4) * count
+
+        # collect all the tiles offset/sizes
+        # metadata = {}
+        metadata = []
+        size_ = 0
+        for x_ in range(x, x+size):
+            for y_ in range(y, y+size):
+                if (x_, y_) in data:
+                    size_ = len(data[x_, y_])
+                    metadata.append(Metadata(offset, size_))
+                else:
+                    metadata.append(Metadata(0, 0))
+                offset += size_
+
+        # write out metadata
+        for m in metadata:
+            self._file.write(struct.pack("2i", m.offset, m.size))
+        
+        # write out data
+        for x_ in range(x, x+size):
+            for y_ in range(y, y+size):
+                self._file.write(data[(x_, y_)])
+
     def readtile(self, x, y):
         offset, size = self.metadata[Point(x, y)]
         self._file.seek(offset)
