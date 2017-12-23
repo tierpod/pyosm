@@ -18,14 +18,14 @@ PointData = namedtuple("Point", "x y data")
 
 
 class Metatile(object):
-    def __init__(self, filename, mode="r"):
-        self.filename = filename
-        self.mode = mode
+    def __init__(self, filename, mode="rb"):
+        if mode not in OPEN_VALID_MODES:
+            raise IOError("mode not supported:", mode)
 
         self._file = builtins.open(filename, mode)
-        self._decode_header()
-        self._decode_metadata()
-        self._point = None
+        self.filename = filename
+        self.header = self._decode_header()
+        self.metadata = self._decode_metadata()
         self._iter = iter(self.metadata)
 
     def _decode_header(self):
@@ -34,7 +34,7 @@ class Metatile(object):
         if magic != META_MAGIC:
             raise IOError("wrong metatile magic header")
         
-        self.header = Header(magic, count, x, y, z)
+        return Header(magic, count, x, y, z)
 
     def _decode_metadata(self):
         metadata = {}
@@ -46,7 +46,7 @@ class Metatile(object):
                 offset, size_ = struct.unpack("2i", data)
                 metadata[Point(x+size, y+size)] = Metadata(offset, size_)
 
-        self.metadata = metadata
+        return metadata
 
     def __repr__(self):
         return "{}.{}({})".format(self.__class__.__module__, self.__class__.__qualname__,
@@ -97,9 +97,6 @@ class Metatile(object):
 
 
 def open(filename, mode="rb"):
-    if mode not in OPEN_VALID_MODES:
-        raise IOError("mode not supported:", mode)
-
     return Metatile(filename, mode)
 
 #def xy_to_offset(x, y):
