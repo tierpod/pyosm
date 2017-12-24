@@ -57,6 +57,9 @@ class Metatile(object):
     def __str__(self):
         return str(self.header)
 
+    def __len__(self):
+        return self.header.count
+
     def read(self):
         raise NotImplementedError("use readtile() or readtiles() instead")
 
