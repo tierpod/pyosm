@@ -60,6 +60,9 @@ class Metatile(object):
     def __len__(self):
         return self.header.count
 
+    def __contains__(self, item):
+        return item in self.metadata
+
     def read(self):
         raise NotImplementedError("use readtile() or readtiles() instead")
 
