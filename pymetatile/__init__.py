@@ -3,7 +3,7 @@
 import builtins
 import struct
 import math
-from collections import namedtuple
+from collections import namedtuple, OrderedDict
 
 
 OPEN_VALID_MODES = ("rb", "wb")
@@ -40,7 +40,7 @@ class Metatile(object):
         return Header(magic, count, x, y, z)
 
     def _decode_metadata(self):
-        metadata = {}
+        metadata = OrderedDict()
       
         for x in range(self.header.x, self.size):
             for y in range(self.header.y, self.size):
