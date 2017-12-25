@@ -9,3 +9,7 @@ doctest:
 .PHONY: init
 init:
 	pip3 install -r requirements.txt
+
+.PHONY: install-user
+install-user:
+	python3 setup.py install --user

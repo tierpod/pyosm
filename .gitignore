@@ -1,5 +1,8 @@
 __pycache__
 .cache
-*.swp
 *.pyc
+*.swp
 *.tmp
+*.egg-info
+dist
+build
