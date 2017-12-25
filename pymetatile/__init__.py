@@ -11,7 +11,7 @@ META_MAGIC = b"META"  # in python3 bytes and str different
 META_SIZE = 8
 
 
-Header = namedtuple("MetatileHeader", "magic count x y z")
+Header = namedtuple("MetatileHeader", "count x y z")
 Metadata = namedtuple("Metadata", "offset size")
 Point = namedtuple("Point", "x y")
 PointData = namedtuple("Point", "x y data")
@@ -36,12 +36,12 @@ class Metatile(object):
         magic, count, x, y, z = struct.unpack("4s4i", self._file.read(size))
         if magic != META_MAGIC:
             raise IOError("wrong metatile magic header")
-        
-        return Header(magic, count, x, y, z)
+
+        return Header(count, x, y, z)
 
     def _decode_metadata(self):
         metadata = OrderedDict()
-      
+
         for x in range(self.header.x, self.size):
             for y in range(self.header.y, self.size):
                 data = self._file.read(2 * 4)
@@ -53,7 +53,7 @@ class Metatile(object):
     def __repr__(self):
         return "{}.{}({})".format(self.__class__.__module__, self.__class__.__qualname__,
                                   self.header)
-    
+
     def __str__(self):
         return str(self.header)
 
@@ -93,7 +93,7 @@ class Metatile(object):
         # write out metadata
         for m in metadata:
             self._file.write(struct.pack("2i", m.offset, m.size))
-        
+
         # write out data
         for x_ in range(x, x+size):
             for y_ in range(y, y+size):
@@ -112,7 +112,7 @@ class Metatile(object):
             data[p] = self.readtile(p.x, p.y)
 
         return data
-    
+
     def close(self):
         self._file.close()
 
@@ -130,14 +130,15 @@ class Metatile(object):
     def __next__(self):
         p = next(self._iter)
         data = self.readtile(p.x, p.y)
-        #return p, data
+        # return p, data
         return PointData(p.x, p.y, data)
 
 
 def open(filename, mode="rb"):
     return Metatile(filename, mode)
 
-#def xy_to_offset(x, y):
-#    mask = SIZE - 1
-#    offset = (x & mask) * SIZE + (y & mask)
-#    return offset
+
+# def xy_to_offset(x, y):
+#     mask = SIZE - 1
+#     offset = (x & mask) * SIZE + (y & mask)
+#     return offset
