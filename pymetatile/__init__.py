@@ -11,10 +11,9 @@ META_MAGIC = b"META"  # in python3 bytes and str different
 META_SIZE = 8
 
 
-Header = namedtuple("MetatileHeader", "count x y z")
+Header = namedtuple("Header", "count x y z")
 Metadata = namedtuple("Metadata", "offset size")
 Point = namedtuple("Point", "x y")
-PointData = namedtuple("Point", "x y data")
 
 
 class Metatile(object):
@@ -66,9 +65,10 @@ class Metatile(object):
     def read(self):
         raise NotImplementedError("use readtile() or readtiles() instead")
 
-    def write(self, count, x, y, z, data):
+    def write(self, x, y, z, data):
         # data is the {(x, y): bytes}
         # write header data
+        count = META_SIZE * META_SIZE
         self._file.write(struct.pack("4s4i", META_MAGIC, count, x, y, z))
         size = round(math.sqrt(count))
 
@@ -129,9 +129,7 @@ class Metatile(object):
 
     def __next__(self):
         p = next(self._iter)
-        data = self.readtile(p.x, p.y)
-        # return p, data
-        return PointData(p.x, p.y, data)
+        return Point(p.x, p.y)
 
 
 def open(filename, mode="rb"):
