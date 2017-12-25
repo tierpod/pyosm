@@ -1,24 +1,61 @@
 #!/usr/bin/python
 
+"""Package pymetatile provides file-like object for reading and writing tiles in metatile format.
+
+struct entry {
+    int offset;
+    int size;
+};
+
+struct meta_layout {
+    char magic[4];
+    int count; // METATILE ^ 2
+    int x, y, z; // lowest x,y of this metatile, plus z
+    struct entry index[]; // count entries
+    // Followed by the tile data
+    // The index offsets are measured from the start of the file
+};
+"""
+
+
 import builtins
 import struct
 import math
 from collections import namedtuple, OrderedDict
 
-
-OPEN_VALID_MODES = ("rb", "wb")
+# metatile header magic value
 META_MAGIC = b"META"  # in python3 bytes and str different
+# metatile size
 META_SIZE = 8
 
 
+# Header is the namedtuple represents metatile header with fileds: count, x, y, z (int).
 Header = namedtuple("Header", "count x y z")
+# Metadata is the namedtuple represents metatile metadata items with fields: offset, size (int)
 Metadata = namedtuple("Metadata", "offset size")
+# Point is the namedtuple represents point with x, y (int) coordinates.
 Point = namedtuple("Point", "x y")
 
 
 class Metatile(object):
+    """Metatile object.
+
+    Attributes:
+        filename (str): path to the file
+        mode (str): mode in which the file is opened
+
+    Attributes (only for "rb" mode):
+        header (namedtuple Header): metatile header data, contains count of tiles, x, y, z
+            coordinates.
+        size (int): square root from Header.count
+        metadata (namedtuple Metadata): metatile metadata, contains offset and size for tile data.
+
+    Raises:
+        IOError
+    """
+
     def __init__(self, filename, mode="rb"):
-        if mode not in OPEN_VALID_MODES:
+        if mode not in ("rb", "wb"):
             raise IOError("mode not supported:", mode)
 
         self._file = builtins.open(filename, mode)
@@ -31,6 +68,8 @@ class Metatile(object):
             self._iter = iter(self.metadata)
 
     def _decode_header(self):
+        """Reads header data from file and returns Header."""
+
         size = len(META_MAGIC) + 4 * 4
         magic, count, x, y, z = struct.unpack("4s4i", self._file.read(size))
         if magic != META_MAGIC:
@@ -39,6 +78,13 @@ class Metatile(object):
         return Header(count, x, y, z)
 
     def _decode_metadata(self):
+        """Reads metadata from file and returns metadata as OrderedDict:
+            {
+                Point(x, y): Metadata(offset, size),
+                ....
+            }
+        """
+
         metadata = OrderedDict()
 
         for x in range(self.header.x, self.size):
@@ -57,16 +103,44 @@ class Metatile(object):
         return str(self.header)
 
     def __len__(self):
+        """Return count of tiles from header.
+
+        >>> with open("tests/data/0.meta", "rb") as mt:
+        ...     print(len(mt))
+        64
+        """
+
         return self.header.count
 
     def __contains__(self, item):
+        """Checks if tuple or namedtuple Point(x, y) contains it metadata."""
+
         return item in self.metadata
 
     def read(self):
+        """Default file-like read() method. Not implemented, use readtile() or readtiles() instead.
+
+        Raises:
+            NotImplementedError
+        """
+
         raise NotImplementedError("use readtile() or readtiles() instead")
 
     def write(self, x, y, z, data):
-        # data is the {(x, y): bytes}
+        """Writes tiles data to opened meatatile file. Use x, y, z (int) as metatile header values.
+
+        Args:
+            x, y, z (int): coordinates for metatile header (start Point(x, y), end
+                Point(x + META_SIZE, y + META_SIZE)). Metatile contains META_SIZE * META_SIZE.
+            data: dict of tiles data with tuple (x, y) as key and bytes as value:
+                {
+                    (x, y): bytes (str),
+                    (x, y + 1): bytes (str),
+                    ...
+                    (x + META_SIZE, y + META_SIZE): bytes (str),
+                }
+        """
+
         # write header data
         count = META_SIZE * META_SIZE
         self._file.write(struct.pack("4s4i", META_MAGIC, count, x, y, z))
@@ -100,6 +174,14 @@ class Metatile(object):
                 self._file.write(data[(x_, y_)])
 
     def readtile(self, x, y):
+        """Read tile data with x, y (int) coordinates from metatile file. Return bytes (str).
+
+        >>> with open("tests/data/0.meta", "rb") as mt:
+        ...     data = mt.readtile(1, 1)
+        ...     print(len(data))
+        10439
+        """
+
         offset, size = self.metadata[Point(x, y)]
         self._file.seek(offset)
         data = self._file.read(size)
@@ -107,6 +189,21 @@ class Metatile(object):
         return data
 
     def readtiles(self):
+        """Read all tiles data from metatile file.
+
+        Returns: dict with tuple (x, y) as key and tile data as value:
+            {
+                Point(x, y): bytes (str),
+                ...
+            }
+
+        >>> with open("tests/data/0.meta", "rb") as mt:
+        ...     data = mt.readtiles()
+        ...     tile = data[(1, 1)]
+        ...     print(len(tile))
+        10439
+        """
+
         data = {}
         for p in self.metadata:
             data[p] = self.readtile(p.x, p.y)
@@ -123,7 +220,7 @@ class Metatile(object):
     def __exit__(self, type, value, tb):
         self._file.close()
 
-    # iterator throw tiles data
+    # iteratate over metadata
     def __iter__(self):
         return self
 
@@ -132,11 +229,21 @@ class Metatile(object):
         return Point(p.x, p.y)
 
 
-def open(filename, mode="rb"):
-    return Metatile(filename, mode)
+def open(file, mode="rb"):
+    """Is the wrapper around builtin open() function. Returns Metatile file-like object.
 
+    Available modes:
+    - "rb": open for reading (default)
+    - "wb": open for writing (rewrite file if exist)
 
-# def xy_to_offset(x, y):
-#     mask = SIZE - 1
-#     offset = (x & mask) * SIZE + (y & mask)
-#     return offset
+    Args:
+        file (str): path to the file
+        mode (str): mode in which the file is opened
+
+    >>> import pymetatile
+    >>> with pymetatile.open("tests/data/0.meta") as mt:
+    ...     print(mt)
+    Header(count=64, x=0, y=0, z=1)
+    """
+
+    return Metatile(file, mode)
