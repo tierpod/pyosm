@@ -4,7 +4,7 @@ import context
 from pymetatile import Point, Metadata
 
 
-test_file = "testdata/0.meta"
+test_file = "tests/data/0.meta"
 
 valid_metadata = {
     Point(x=0, y=0): Metadata(offset=532, size=25093),
