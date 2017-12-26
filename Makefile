@@ -18,3 +18,4 @@ install-user:
 clean:
 	# clean setuptools stuff
 	rm -rf build dist pymetatile.egg-info
+	find ./ -name '*.pyc' -delete

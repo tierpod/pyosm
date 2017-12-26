@@ -18,4 +18,5 @@ struct meta_layout {
 """
 
 from pymetatile.filelike import open  # noqa: F401
-from pymetatile.convert import Metatile, META_SIZE  # noqa: F401
+from pymetatile.metatile import Metatile, META_SIZE  # noqa: F401
+from pymetatile.tile import Tile  # noqa: F401

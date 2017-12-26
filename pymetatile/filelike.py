@@ -6,7 +6,7 @@ import math
 from collections import OrderedDict
 
 from pymetatile.objects import Header, Metadata, Point
-from pymetatile.convert import META_SIZE
+from pymetatile.metatile import META_SIZE
 
 # metatile header magic value
 META_MAGIC = b"META"  # in python3 bytes and str different
@@ -62,8 +62,8 @@ class MetatileFile(object):
 
         metadata = OrderedDict()
 
-        for x in range(self.header.x, self.size):
-            for y in range(self.header.y, self.size):
+        for x in range(self.header.x, self.header.x + self.size):
+            for y in range(self.header.y, self.header.y + self.size):
                 data = self._file.read(2 * 4)
                 offset, size = struct.unpack("2i", data)
                 metadata[Point(x, y)] = Metadata(offset, size)

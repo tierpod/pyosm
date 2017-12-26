@@ -9,10 +9,14 @@ from pymetatile.objects import Point
 META_SIZE = 8
 
 RE_METATILE = re.compile(r"(\w+)/(\d+)/(\d+)/(\d+)/(\d+)/(\d+)/(\d+)\.meta")
-RE_TILE = re.compile(r"(\w+)/(\d+)/(\d+)/(\d+)(\.\w+)")
 
 
 class Metatile(object):
+    """Attributes:
+        z (int): zoom coordinate
+        hashes (list of 5 int): metatile hashes
+        style (str): style name
+    """
 
     def __init__(self, z, hashes, style):
         self.z = z
@@ -25,10 +29,6 @@ class Metatile(object):
 
     def filepath(self, basedir=""):
         """Calculates metatile filepath using basedir (str).
-
-        >>> mt = Metatile.from_tile(z=10, x=697, y=321, style="mapname")
-        >>> print(mt.filepath("/var/lib/mod_tile"))
-        /var/lib/mod_tile/mapname/10/0/0/33/180/128.meta
 
         >>> mt = Metatile.from_url("mapname/10/0/1/2/3/4.meta")
         >>> print(mt.filepath("/cache"))
@@ -45,13 +45,10 @@ class Metatile(object):
     def size(self):
         """Calculates min size of tiles with data inside metatile.
 
-        >>> mt = Metatile.from_tile(z=1, x=1, y=1, style="mapname")
+        >>> from pymetatile import Tile
+        >>> mt = Metatile.from_tile(Tile(z=1, x=1, y=1, style="mapname"))
         >>> print(mt.size())
         2
-
-        >>> mt = Metatile.from_tile(z=10, x=697, y=321, style="mapname")
-        >>> print(mt.size())
-        8
         """
 
         return min(META_SIZE, 1 << self.z)
@@ -66,7 +63,8 @@ class Metatile(object):
     def xy(self):
         """Calculates metatile coordinates. Returns namedtuple of int (x, y).
 
-        >>> mt = Metatile.from_tile(z=10, x=697, y=321)
+        >>> from pymetatile import Tile
+        >>> mt = Metatile.from_tile(Tile(z=10, x=697, y=321))
         >>> print(mt.xy())
         Point(x=696, y=320)
         """
@@ -84,34 +82,36 @@ class Metatile(object):
 
     @classmethod
     def from_url(cls, url):
-        """Creates new Metatile from tile or metatile url. Parse url as metatile if ends with
-        ".meta".
-
-        >>> print(Metatile.from_url("mapname/10/697/321.topojson"))
-        Metatile(z:10, hashes:[0, 0, 33, 180, 128], style:mapname)
+        """Creates new Metatile from metatile url (str with format style/z/h0/h1/h2/h3/h4.meta).
 
         >>> print(Metatile.from_url("mapname/10/0/1/2/3/4.meta"))
         Metatile(z:10, hashes:[0, 1, 2, 3, 4], style:mapname)
         """
 
-        if url.endswith(".meta"):
-            return _from_metatile_url(url)
+        match = RE_METATILE.search(url)
+        if not match:
+            raise ValueError("unable to covert uri to Metatile")
 
-        return _from_tile_url(url)
+        style, z, h0, h1, h2, h3, h4 = match.groups()
+        hashes = [int(h0), int(h1), int(h2), int(h3), int(h4)]
+
+        return Metatile(z=int(z), hashes=hashes, style=style)
 
     @classmethod
-    def from_tile(cls, z, x, y, style=""):
-        """Create new Metatile from tile coordinates: z, x, y (int) and style (str).
+    def from_tile(cls, t):
+        """Create new Metatile from pymetatile.tile.Tile object.
 
-        >>> print(Metatile.from_tile(z=10, x=697, y=321, style="mapname"))
+        >>> from pymetatile import Tile
+        >>> tile = Tile(z=10, x=697, y=321, style="mapname")
+        >>> print(Metatile.from_tile(tile))
         Metatile(z:10, hashes:[0, 0, 33, 180, 128], style:mapname)
         """
 
         mask = META_SIZE - 1
         hashes = []
 
-        x = x & ~mask
-        y = y & ~mask
+        x = t.x & ~mask
+        y = t.y & ~mask
 
         for _ in range(5):
             hashes.append(((x & 0x0f) << 4) | (y & 0x0f))
@@ -119,29 +119,4 @@ class Metatile(object):
             y >>= 4
         hashes.reverse()
 
-        return Metatile(z=z, hashes=hashes, style=style)
-
-
-def _from_metatile_url(url):
-    """Parse url as metatile and return Metatile."""
-
-    match = RE_METATILE.search(url)
-    if not match:
-        raise ValueError("unable to covert uri to Metatile")
-
-    style, z, h0, h1, h2, h3, h4 = match.groups()
-    hashes = [int(h0), int(h1), int(h2), int(h3), int(h4)]
-
-    return Metatile(z=int(z), hashes=hashes, style=style)
-
-
-def _from_tile_url(url):
-    """Parse url as tile and return Metatile."""
-
-    match = RE_TILE.search(url)
-    if not match:
-        raise ValueError("unable to covert uri to Tile")
-
-    style, z, x, y, _ = match.groups()
-
-    return Metatile.from_tile(z=int(z), x=int(x), y=int(y), style=style)
+        return Metatile(z=t.z, hashes=hashes, style=t.style)
