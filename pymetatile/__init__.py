@@ -2,6 +2,12 @@
 
 """Package pymetatile provides file-like object for reading and writing tiles in metatile format.
 
+pymetatile.open() provides file-like interface for reading and writing metatiles.
+
+pymetatile.Metatile provides interfaces for creating Metatile object.
+
+pymetatile.Tile provides interfaces for creating Tile object.
+
 struct entry {
     int offset;
     int size;
