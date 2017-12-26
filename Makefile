@@ -13,3 +13,8 @@ init:
 .PHONY: install-user
 install-user:
 	python3 setup.py install --user
+
+.PHONY: clean
+clean:
+	# clean setuptools stuff
+	rm -rf build dist pymetatile.egg-info
