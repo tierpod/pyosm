@@ -75,6 +75,14 @@ True
 
 *len()* returns count of tiles (Header.count).
 
+*manipulate* with Tile and Metatile objects (create, convert coordinates, get filepath):
+
+```python
+>>> t = Tile.from_url(z=10, y=1, x=2, style="mapname", ext=".png")
+>>> mt = Metatile.from_tile(t)
+>>> print(mt.filepath("/cache"))
+/cache/mapname/10/0/0/0/0/0.meta
+```
 
 metatile format description
 ---------------------------
