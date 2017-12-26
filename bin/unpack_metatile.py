@@ -1,0 +1,41 @@
+#!/usr/bin/python
+
+import argparse
+import os
+
+import pymetatile
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(description="Unpack metatile to dir.")
+    parser.add_argument("-o", "--outdir", default="/tmp", help="output directory")
+    parser.add_argument("-e", "--ext", default=".png", help="output files extension"),
+    parser.add_argument("METATILE", nargs="+", help="input metatile files")
+    return parser.parse_args()
+
+
+def main():
+    args = parse_args()
+    for path in args.METATILE:
+        with pymetatile.open(path, "rb") as mt:
+            unpack(mt, args.outdir, args.ext)
+
+
+def unpack(mt, out, ext):
+    tiles = mt.readtiles()
+    for p, data in tiles.items():
+        if not data:
+            print("skip empty data for", p)
+            continue
+
+        out_dir = os.path.join(out, str(mt.header.z), str(p.x))
+        out_file = str(p.y) + ext
+        if not os.path.exists(out_dir):
+            os.makedirs(out_dir)
+
+        with open(os.path.join(out_dir, out_file), "wb") as f:
+            f.write(data)
+
+
+if __name__ == "__main__":
+    main()
