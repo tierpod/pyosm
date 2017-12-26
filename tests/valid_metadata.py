@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
-import context
-from pymetatile import Point, Metadata
+import context  # noqa: F401
+from pymetatile.objects import Point, Metadata
 
 
 test_file = "tests/data/0.meta"

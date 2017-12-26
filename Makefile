@@ -4,7 +4,7 @@ test:
 
 .PHONY: doctest
 doctest:
-	python3 -m doctest -v pymetatile/__init__.py
+	python3 -m doctest pymetatile/*.py
 
 .PHONY: init
 init:

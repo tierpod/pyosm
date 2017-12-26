@@ -4,9 +4,9 @@ import filecmp
 
 import pytest
 
-import context
+import context  # noqa: F401
 import pymetatile
-from pymetatile import Point
+from pymetatile.objects import Point
 from valid_metadata import valid_metadata, test_file
 
 
@@ -23,7 +23,7 @@ def test_open_not_found():
 
 def test_metatile_open():
     with pymetatile.open(test_file, "rb") as mt:
-        assert isinstance(mt, pymetatile.Metatile)
+        assert isinstance(mt, pymetatile.filelike.MetatileFile)
 
 
 def test_metatile_header():
