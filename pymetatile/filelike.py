@@ -155,7 +155,7 @@ class MetatileFile(object):
                     size_ = 0
                 index.append(Entry(offset, size_))
                 offset += size_
-        print(index)
+
         # write out index table
         for entry in index:
             self._file.write(struct.pack("2i", entry.offset, entry.size))
