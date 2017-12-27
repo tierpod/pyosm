@@ -9,7 +9,7 @@ import pymetatile
 def parse_args():
     parser = argparse.ArgumentParser(description="Unpack metatile to dir.")
     parser.add_argument("-o", "--outdir", default="/tmp", help="output directory")
-    parser.add_argument("-e", "--ext", default=".png", help="output files extension"),
+    parser.add_argument("-e", "--ext", default=".png", help="output files extension")
     parser.add_argument("METATILE", nargs="+", help="input metatile files")
     return parser.parse_args()
 
