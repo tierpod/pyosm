@@ -5,7 +5,7 @@ from setuptools import setup
 
 setup(
     name="pymetatile",
-    version="0.1",
+    version="0.2",
     description="Metatile file encoder and decoder",
     url="https://github.com/tierpod/pymetatile",
     author="Pavel Podkorytov",
