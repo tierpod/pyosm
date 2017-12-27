@@ -8,7 +8,7 @@ from pymetatile import Tile, Metatile
 def parse_args():
     parser = argparse.ArgumentParser(description="Convert filepath between tile and metatile.")
     parser.add_argument("-d", "--basedir", default="", help="output basedir prefix")
-    parser.add_argument("-e", "--ext", help="output extension"),
+    parser.add_argument("-e", "--ext", default=".png", help="output extension"),
     parser.add_argument("PATH", nargs="+", help="intput filepath")
     return parser.parse_args()
 

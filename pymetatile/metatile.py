@@ -3,11 +3,10 @@
 import os.path
 import re
 
-from pymetatile.objects import Point
+from pymetatile.common import Point
 
 # metatile size
 META_SIZE = 8
-
 RE_METATILE = re.compile(r"(\w+)/(\d+)/(\d+)/(\d+)/(\d+)/(\d+)/(\d+)\.meta")
 
 
