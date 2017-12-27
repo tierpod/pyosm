@@ -73,3 +73,10 @@ test_index = {
     Point(x=7, y=6): Entry(offset=73692, size=0),
     Point(x=7, y=7): Entry(offset=73692, size=0),
 }
+
+test_index_short = {
+    Point(x=0, y=0): Entry(offset=532, size=25093),
+    Point(x=0, y=1): Entry(offset=25625, size=11330),
+    Point(x=1, y=0): Entry(offset=36955, size=26298),
+    Point(x=1, y=1): Entry(offset=63253, size=10439),
+}

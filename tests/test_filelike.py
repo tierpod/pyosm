@@ -92,3 +92,20 @@ def test_metatile_write():
 
     diff = filecmp.cmp(test_file, test_file + ".tmp")
     assert diff
+
+
+def test_metatile_write_short():
+    with pymetatile.open(test_file, "rb") as mt:
+        header = mt.header
+        data = mt.readtiles()
+
+    data_none_empty = {}
+    for p, d in data.items():
+        if d:
+            data_none_empty[p] = d
+
+    with pymetatile.open(test_file + ".tmp", "wb") as mt:
+        mt.write(x=header.x, y=header.y, z=header.z, data=data_none_empty)
+
+    diff = filecmp.cmp(test_file, test_file + ".tmp")
+    assert diff

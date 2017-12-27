@@ -151,11 +151,11 @@ class MetatileFile(object):
             for y_ in range(y, y+size):
                 if (x_, y_) in data:
                     size_ = len(data[x_, y_])
-                    index.append(Entry(offset, size_))
                 else:
-                    index.append(Entry(0, 0))
+                    size_ = 0
+                index.append(Entry(offset, size_))
                 offset += size_
-
+        print(index)
         # write out index table
         for entry in index:
             self._file.write(struct.pack("2i", entry.offset, entry.size))
@@ -163,7 +163,8 @@ class MetatileFile(object):
         # write out data
         for x_ in range(x, x+size):
             for y_ in range(y, y+size):
-                self._file.write(data[(x_, y_)])
+                if (x_, y_) in data:
+                    self._file.write(data[(x_, y_)])
 
     def readtile(self, x, y):
         """Read tile data with x, y (int) coordinates from metatile file. Return bytes (str).
