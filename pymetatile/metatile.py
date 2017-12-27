@@ -41,12 +41,12 @@ class Metatile(object):
         h4 = str(self.hashes[4])
         return os.path.join(basedir, self.style, str(self.z), h0, h1, h2, h3, h4 + self.ext)
 
-    def size(self):
+    def __len__(self):
         """Calculates min size of tiles with data inside metatile.
 
         >>> from pymetatile import Tile
         >>> mt = Metatile.from_tile(Tile(z=1, x=1, y=1, style="mapname"))
-        >>> print(mt.size())
+        >>> print(mt)
         2
         """
 
