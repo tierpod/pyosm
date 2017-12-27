@@ -15,8 +15,8 @@ For example, read specific tile data from metatile quite easy:
 
 ```
 
-
-### MetatileFile
+MetatileFile
+------------
 
 **pymetatile.open(filename, mode)** opens file for reading ("rb" mode) or writing ("wb").
 
@@ -66,8 +66,8 @@ Methods:
 * **write(x, y, z, data)**, where z is the metatile zoom level, x, y is the lowest values,
   data is the dict {Point(x, y): bytes, ...}
 
-
-### Metatile
+Metatile
+--------
 
 Methods:
 
@@ -89,8 +89,8 @@ Metatile(z:10, hashes:[0, 0, 33, 180, 128], style:mapname)
 
 ```
 
-
-### Tile
+Tile
+----
 
 Methods:
 
@@ -110,14 +110,11 @@ Tile(z:10, x:0, y:0, style:mapname, ext:.png)
 
 ```
 
-
 for more information, see info().
-
 
 metatile format description
 ---------------------------
 
 Can be found in [mod_tile][1] project:
-
 
 [1]: https://github.com/openstreetmap/mod_tile/blob/master/includes/metatile.h
