@@ -16,10 +16,10 @@ struct meta_layout {
 };
 """
 
-import builtins
 import math
 import struct
 from collections import OrderedDict, namedtuple
+from io import open as builtin_open
 
 from pymetatile.common import Point
 from pymetatile.metatile import META_SIZE
@@ -60,12 +60,12 @@ class MetatileFile(object):
         if mode not in ("rb", "wb"):
             raise IOError("mode not supported:", mode)
 
-        self._file = builtins.open(filename, mode)
+        self._file = builtin_open(filename, mode)
         self.filename = filename
 
         if mode == "rb":
             self.header = self._decode_header()
-            self.size = round(math.sqrt(self.header.count))
+            self.size = int(round(math.sqrt(self.header.count)))
             self.index = self._decode_index()
             self._iter = iter(self.index)
 
@@ -89,7 +89,7 @@ class MetatileFile(object):
         return index
 
     def __repr__(self):
-        return "{}.{}({})".format(self.__class__.__module__, self.__class__.__qualname__,
+        return "{}.{}({})".format(self.__class__.__module__, self.__class__.__name__,
                                   self.header)
 
     def __str__(self):
@@ -137,7 +137,7 @@ class MetatileFile(object):
         # write header data
         count = META_SIZE * META_SIZE
         self._file.write(struct.pack("4s4i", META_MAGIC, count, x, y, z))
-        size = round(math.sqrt(count))
+        size = int(round(math.sqrt(count)))
 
         offset = len(META_MAGIC) + 4 * 4
         # need to pre-compensate the offsets for the size of the offset/size
@@ -216,7 +216,13 @@ class MetatileFile(object):
     def __iter__(self):
         return self
 
+    # python3
     def __next__(self):
+        p = next(self._iter)
+        return Point(p.x, p.y)
+
+    # python2
+    def next(self):
         p = next(self._iter)
         return Point(p.x, p.y)
 
