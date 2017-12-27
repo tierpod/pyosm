@@ -1,18 +1,25 @@
 .PHONY: test
 test:
-	pytest-3
+	py.test-3
 
 .PHONY: doctest
 doctest:
 	python3 -m doctest pymetatile/*.py
 
-.PHONY: init
-init:
-	pip3 install -r requirements.txt
+.PHONY: init-dev
+init-dev:
+	pip3 install -r requirements-dev.txt
 
 .PHONY: install-user
 install-user:
 	python3 setup.py install --user
+
+.PHONY: uninstall
+uninstall:
+	pip3 uninstall pymetatile
+
+.PHONY: install
+	python3 setup.py install
 
 .PHONY: clean
 clean:

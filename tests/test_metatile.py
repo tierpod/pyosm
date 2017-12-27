@@ -37,9 +37,9 @@ def test_metatile_from_tile(tile, expected):
     (Tile(2, 2, 2), 4),
     (Tile(4, 4, 4), 8),
 ])
-def test_metatile_xy(tile, expected):
+def test_metatile_len(tile, expected):
     mt = Metatile.from_tile(tile)
-    assert mt.size() == expected
+    assert len(mt) == expected
 
 
 @pytest.mark.parametrize("basedir,tile,expected", [

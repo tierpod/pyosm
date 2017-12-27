@@ -46,7 +46,7 @@ class Metatile(object):
 
         >>> from pymetatile import Tile
         >>> mt = Metatile.from_tile(Tile(z=1, x=1, y=1, style="mapname"))
-        >>> print(mt)
+        >>> print(len(mt))
         2
         """
 
