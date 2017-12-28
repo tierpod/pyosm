@@ -29,18 +29,13 @@ class Metatile(object):
 
     def points(self):
         x, y = self.xy()
-        points = []
-        for x_ in range(x, x + len(self)):
-            for y_ in range(y, y + len(self)):
-                points.append(Point(x_, y_))
-
-        return points
+        return [Point(xx, yy) for xx in range(x, x + len(self)) for yy in range(y, y + len(self))]
 
     def __iter__(self):
         return self
 
     def __next__(self):
-        return next(self._iter)
+        return self.next()
 
     def next(self):
         return next(self._iter)

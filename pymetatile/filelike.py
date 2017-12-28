@@ -219,8 +219,7 @@ class MetatileFile(object):
 
     # python3
     def __next__(self):
-        p = next(self._iter)
-        return Point(p.x, p.y)
+        return self.next()
 
     # python2
     def next(self):
