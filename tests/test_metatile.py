@@ -49,3 +49,29 @@ def test_metatile_len(tile, expected):
 def test_metatile_filepath(basedir, tile, expected):
     mt = Metatile.from_tile(tile)
     assert mt.filepath(basedir) == expected
+
+
+@pytest.mark.parametrize("url,expected", [
+    ("mapname/10/0/0/33/180/128.meta", 64),
+    ("mapname/1/0/0/0/0/0.meta", 4)
+])
+def test_metatile_iter_len(url, expected):
+    mt = Metatile.from_url(url)
+    count = 0
+    for __ in mt:
+        count += 1
+
+    assert count == expected
+
+
+@pytest.mark.parametrize("url", [
+    ("mapname/10/0/0/33/180/128.meta"),
+    ("mapname/1/0/0/0/0/0.meta"),
+])
+def test_metatile_points_order(url):
+    mt = Metatile.from_url(url)
+    points = []
+    for p in mt:
+        points.append(p)
+
+    assert points == mt.points()
