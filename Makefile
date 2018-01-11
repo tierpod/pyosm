@@ -8,7 +8,7 @@ test:
 
 .PHONY: doctest
 doctest:
-	python$(PYTHON_VER) -m doctest pymetatile/*.py
+	python$(PYTHON_VER) -m doctest pymetatile/*.py README.md
 
 .PHONY: init-dev
 init-dev:
