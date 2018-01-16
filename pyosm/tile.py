@@ -1,4 +1,7 @@
 #!/usr/bin/python
+"""Provides tile description based on OSM filename convention: 
+https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames
+"""
 
 import os.path
 import re
@@ -36,9 +39,9 @@ class Tile(object):
 
     @classmethod
     def from_metatile(cls, mt, ext=".png"):
-        """Creates new Tile instance from pymetatile.Metatile object, use ext (str) as extension.
+        """Creates new Tile from mt (pyosm.Metatile) object, use ext (str) as extension.
 
-        >>> from pymetatile import Metatile
+        >>> from pyosm import Metatile
         >>> mt = Metatile.from_url("mapname/10/0/0/0/0/0.meta")
         >>> print(Tile.from_metatile(mt))
         Tile(z:10, x:0, y:0, style:mapname, ext:.png)
@@ -57,7 +60,7 @@ class Tile(object):
 
     @classmethod
     def from_url(cls, url):
-        """Creates new Tile instance from url (str).
+        """Creates new Tile from url (str).
 
         >>> print(Tile.from_url("mapname/1/2/3.png"))
         Tile(z:1, x:2, y:3, style:mapname, ext:.png)
