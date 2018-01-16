@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 # Always prefer setuptools over distutils
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
     name="pyosm",
@@ -15,7 +15,7 @@ setup(
         "Development Status :: 3 - Alpha",
         "Programming Language :: Python :: 3",
     ],
-    packages=["pyosm"],
+    packages=find_packages(),
     install_requires=["requests"],
     # entry_points={
     #     "console_script": [
