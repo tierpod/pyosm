@@ -1,12 +1,12 @@
 #!/usr/bin/python
-"""Provides tile description based on OSM filename convention: 
+"""Provides tile description based on OSM filename convention:
 https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames
 """
 
 import os.path
 import re
 
-RE_TILE = re.compile(r"(\w+)/(\d+)/(\d+)/(\d+)(\.\w+)")
+TILE_URL_RE = re.compile(r"(\w+)/(\d+)/(\d+)/(\d+)(\.\w+)")
 
 
 class Tile(object):
@@ -66,7 +66,7 @@ class Tile(object):
         Tile(z:1, x:2, y:3, style:mapname, ext:.png)
         """
 
-        match = RE_TILE.search(url)
+        match = TILE_URL_RE.search(url)
         if not match:
             raise ValueError("unable to covert uri to Tile")
 
