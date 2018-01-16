@@ -84,7 +84,7 @@ Metatile(z:10, hashes:[0, 0, 33, 180, 128], style:mapname)
 Try to implement metatile file encoder/decoder in pythonic way (inspired by Raymond Hettinger
 videos).
 
-* **pyosm.open(filename, mode)** -> MetatileFile: opens file for reading ("rb" mode) or
+* **pyosm.metatile.open(filename, mode)** -> MetatileFile: opens file for reading ("rb" mode) or
   writing ("wb"). Returns file-like object.
 
 Support *with* statement, *in* statement, *iterating* over points:
