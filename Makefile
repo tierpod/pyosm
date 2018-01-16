@@ -1,6 +1,7 @@
 # default python version. For using python2, use:
 # PYTHON_VER=2 make test
 PYTHON_VER ?= 3
+PACKAGE    := pyosm
 
 .PHONY: test
 test:
@@ -8,7 +9,8 @@ test:
 
 .PHONY: doctest
 doctest:
-	python$(PYTHON_VER) -m doctest pymetatile/*.py README.md
+	find -name '*.py' -exec python$(PYTHON_VER) -m doctest {} \;
+	python$(PYTHON_VER) -m doctest README.md
 
 .PHONY: init-dev
 init-dev:
@@ -20,7 +22,7 @@ install-user:
 
 .PHONY: uninstall
 uninstall:
-	pip$(PYTHON_VER) uninstall pymetatile
+	pip$(PYTHON_VER) uninstall $(PACKAGE)
 
 .PHONY: install
 	python$(PYTHON_VER) setup.py install
@@ -28,9 +30,9 @@ uninstall:
 .PHONY: clean
 clean:
 	# clean setuptools stuff
-	rm -rf build dist pyosm.egg-info
+	rm -rf build dist $(PACKAGE).egg-info
 	# clean python2-stuff
 	find ./ -name '*.pyc' -delete
 	# clean python3-stuff
-	find ./ -name "__pycache__" -type d -exec rm rf {} \;
+	find ./ -name "__pycache__" -type d -exec rm -rf {} \;
 
