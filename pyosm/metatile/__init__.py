@@ -1,4 +1,8 @@
 #!/usr/bin/python
+"""Provides metatile description based on OSM and mod_tile:
+https://wiki.openstreetmap.org/wiki/Meta_tiles
+https://github.com/openstreetmap/mod_tile
+"""
 
 import os.path
 import re
@@ -7,7 +11,9 @@ from pyosm.point import Point
 
 # metatile size
 META_SIZE = 8
-RE_METATILE = re.compile(r"(\w+)/(\d+)/(\d+)/(\d+)/(\d+)/(\d+)/(\d+)\.meta")
+# metatile extension
+META_EXT = ".meta"
+META_URL_RE = re.compile(r"(\w+)/(\d+)/(\d+)/(\d+)/(\d+)/(\d+)/(\d+)\.meta")
 
 
 class Metatile(object):
@@ -21,7 +27,7 @@ class Metatile(object):
         self.z = z
         self.hashes = hashes
         self.style = style
-        self.ext = ".meta"
+        self.ext = META_EXT
         self._iter = iter(self.points())
 
     def __str__(self):
@@ -58,7 +64,7 @@ class Metatile(object):
     def __len__(self):
         """Calculates min size of tiles with data inside metatile.
 
-        >>> from pymetatile import Tile
+        >>> from pyosm import Tile
         >>> mt = Metatile.from_tile(Tile(z=1, x=1, y=1, style="mapname"))
         >>> print(len(mt))
         2
@@ -76,7 +82,7 @@ class Metatile(object):
     def xy(self):
         """Calculates metatile coordinates. Returns namedtuple of int (x, y).
 
-        >>> from pymetatile import Tile
+        >>> from pyosm import Tile
         >>> mt = Metatile.from_tile(Tile(z=10, x=697, y=321))
         >>> print(mt.xy())
         Point(x=696, y=320)
@@ -101,7 +107,7 @@ class Metatile(object):
         Metatile(z:10, hashes:[0, 1, 2, 3, 4], style:mapname)
         """
 
-        match = RE_METATILE.search(url)
+        match = META_URL_RE.search(url)
         if not match:
             raise ValueError("unable to covert uri to Metatile")
 
@@ -112,9 +118,9 @@ class Metatile(object):
 
     @classmethod
     def from_tile(cls, t):
-        """Create new Metatile from pymetatile.tile.Tile object.
+        """Create new Metatile from pyosm.point.Tile object.
 
-        >>> from pymetatile import Tile
+        >>> from pyosm import Tile
         >>> tile = Tile(z=10, x=697, y=321, style="mapname")
         >>> print(Metatile.from_tile(tile))
         Metatile(z:10, hashes:[0, 0, 33, 180, 128], style:mapname)

@@ -1,8 +1,8 @@
 #!/usr/bin/python
 
 import context  # noqa: F401
-from pymetatile.filelike import Entry
-from pymetatile.common import Point
+from pyosm import Point
+from pyosm.metatile.filelike import Entry
 
 
 test_file = "tests/data/0.meta"

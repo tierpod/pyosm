@@ -1,5 +1,7 @@
 #!/usr/bin/python
-"""Layout description from mod_tile project:
+"""Provides file-like reader and writer object.
+
+Metatile layout description from mod_tile project:
 
 struct entry {
     int offset;
@@ -21,12 +23,11 @@ import struct
 from collections import OrderedDict, namedtuple
 from io import open as builtin_open
 
-from pymetatile.common import Point
-from pymetatile.metatile import META_SIZE
+from pyosm.point import Point
+from pyosm.metatile import META_SIZE
 
 # metatile header magic value
 META_MAGIC = b"META"  # in python3 bytes and str different
-
 # Entry represents entry struct: offset (int) and size (int).
 Entry = namedtuple("Entry", "offset size")
 # Header includes metatile struct fields except index[]: magic (bytes), count, x, y, z (int).
@@ -238,8 +239,7 @@ def open(file, mode="rb"):
         file (str): path to the file
         mode (str): mode in which the file is opened
 
-    >>> import pymetatile
-    >>> with pymetatile.open("tests/data/0.meta") as mt:
+    >>> with open("tests/data/0.meta") as mt:
     ...     print(mt)
     Header(count=64, x=0, y=0, z=1)
     """
