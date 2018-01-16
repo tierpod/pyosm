@@ -9,7 +9,7 @@ test:
 
 .PHONY: doctest
 doctest:
-	find $(PACKAGE) -name '*.py' -exec python$(PYTHON_VER) -m doctest {} \;
+	find $(PACKAGE) -name '*.py' -print | xargs python$(PYTHON_VER) -m doctest
 	python$(PYTHON_VER) -m doctest README.md
 
 .PHONY: init-dev
@@ -34,5 +34,4 @@ clean:
 	# clean python2-stuff
 	find ./ -name '*.pyc' -delete
 	# clean python3-stuff
-	find ./ -name "__pycache__" -type d -exec rm -rf {} \;
-
+	find ./ -name __pycache__ -type d -print | xargs rm -r
