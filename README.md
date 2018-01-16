@@ -1,5 +1,5 @@
-pymetatile: work with metatile files and coordinates
-====================================================
+pyosm: library for building OSM tools
+=====================================
 
 Package pymetatile is the pythonic-way library for reading/writing metatile files, translating
 Tile <-> Metatile coordinates.

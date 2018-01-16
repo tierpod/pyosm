@@ -3,7 +3,7 @@
 import os.path
 import re
 
-from pymetatile.common import Point
+from pyosm.point import Point
 
 # metatile size
 META_SIZE = 8

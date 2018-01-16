@@ -2,7 +2,7 @@
 
 import argparse
 
-from pymetatile import Tile, Metatile
+from pyosm import Tile, Metatile
 
 
 def parse_args():

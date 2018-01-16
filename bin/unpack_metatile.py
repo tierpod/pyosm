@@ -3,7 +3,7 @@
 import argparse
 import os
 
-import pymetatile
+import pyosm
 
 
 def parse_args():
@@ -17,7 +17,7 @@ def parse_args():
 def main():
     args = parse_args()
     for path in args.METATILE:
-        with pymetatile.open(path, "rb") as mt:
+        with pyosm.open(path, "rb") as mt:
             unpack(mt, args.outdir, args.ext)
 
 

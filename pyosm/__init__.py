@@ -22,6 +22,8 @@ you can also use MetatileFile attributes: index, header, size.
 for more information, see info().
 """
 
-from pymetatile.filelike import open  # noqa: F401
-from pymetatile.metatile import Metatile, META_SIZE  # noqa: F401
-from pymetatile.tile import Tile  # noqa: F401
+from pyosm.metatile import Metatile, META_SIZE  # noqa: F401
+from pyosm.metatile.filelike import open  # noqa: F401
+from pyosm.point import Point, ZXY, LatLong, zxy_to_latlong, latlong_to_zxy  # noqa: F401
+from pyosm.polygon import Polygon, Region  # noqa: F401
+from pyosm.tile import Tile  # noqa: F401

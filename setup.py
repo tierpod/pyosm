@@ -4,10 +4,10 @@
 from setuptools import setup
 
 setup(
-    name="pymetatile",
-    version="0.3",
-    description="Metatile file encoder and decoder",
-    url="https://github.com/tierpod/pymetatile",
+    name="pyosm",
+    version="0.4",
+    description="Library for building OSM tools",
+    url="https://github.com/tierpod/pyosm",
     author="Pavel Podkorytov",
     authoer_email="pod.pavel@gmail.com",
     license='MIT',
@@ -15,7 +15,7 @@ setup(
         "Development Status :: 3 - Alpha",
         "Programming Language :: Python :: 3",
     ],
-    packages=["pymetatile"],
+    packages=["pyosm"],
     install_requires=["requests"],
     # entry_points={
     #     "console_script": [

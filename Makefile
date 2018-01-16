@@ -28,8 +28,9 @@ uninstall:
 .PHONY: clean
 clean:
 	# clean setuptools stuff
-	rm -rf build dist pymetatile.egg-info
+	rm -rf build dist pyosm.egg-info
 	# clean python2-stuff
 	find ./ -name '*.pyc' -delete
 	# clean python3-stuff
-	rm -rf pymetatile/__pycache__
+	find ./ -name "__pycache__" -type d -exec rm rf {} \;
+
