@@ -1,22 +1,22 @@
 #!/usr/bin/python
-"""Contains functions for converting point coordinates.
+"""Contains basic points description and functions for converting between them.
 """
 
 import math
 from collections import namedtuple
 
+# Point represents point with x, y (int) coordinates.
+Point = namedtuple("Point", "x, y")
 # LatLong represents latitude and longtitude (float) coordinates.
 LatLong = namedtuple("LatLong", "lat, long")
 # ZXY represents point with z, x, y (int) coordinates.
 ZXY = namedtuple("ZXY", "z, x, y")
 
-Point = namedtuple("Point", "x, y")
-
 
 def zxy_to_latlong(z, x, y):
-    """Takes z, x, y and convert to LatLong (float values rounded to 4 digits).
+    """Takes z, x, y (int) and convert to LatLong (float values rounded to 4 digits).
 
-    >>> from pygeopoint.convert import zxy_to_latlong
+    >>> from pyosm.point import zxy_to_latlong
     >>> print(zxy_to_latlong(10, 697, 321))
     LatLong(lat=55.5783, long=65.0391)
     """
@@ -29,9 +29,9 @@ def zxy_to_latlong(z, x, y):
 
 
 def latlong_to_zxy(lat, lng, zoom):
-    """Takes lat, lng, zoom and convert to ZXY.
+    """Takes lat, lng (float), zoom (int) and convert to ZXY.
 
-    >>> from pygeopoint.convert import latlong_to_zxy
+    >>> from pyosm.point import latlong_to_zxy
     >>> print(latlong_to_zxy(55.5783, 65.0391, 10))
     ZXY(z=10, x=697, y=321)
     """
