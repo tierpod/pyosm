@@ -9,7 +9,7 @@ test:
 
 .PHONY: doctest
 doctest:
-	find -name '*.py' -exec python$(PYTHON_VER) -m doctest {} \;
+	find $(PACKAGE) -name '*.py' -exec python$(PYTHON_VER) -m doctest {} \;
 	python$(PYTHON_VER) -m doctest README.md
 
 .PHONY: init-dev

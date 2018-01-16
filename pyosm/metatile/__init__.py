@@ -8,6 +8,7 @@ import os.path
 import re
 
 from pyosm.point import Point
+from pyosm.metatile.filelike import open
 
 # metatile size
 META_SIZE = 8

@@ -24,10 +24,11 @@ from collections import OrderedDict, namedtuple
 from io import open as builtin_open
 
 from pyosm.point import Point
-from pyosm.metatile import META_SIZE
 
 # metatile header magic value
 META_MAGIC = b"META"  # in python3 bytes and str different
+# metatile size
+META_SIZE = 8
 # Entry represents entry struct: offset (int) and size (int).
 Entry = namedtuple("Entry", "offset size")
 # Header includes metatile struct fields except index[]: magic (bytes), count, x, y, z (int).

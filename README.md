@@ -1,33 +1,102 @@
 pyosm: library for building OSM tools
 =====================================
 
-Package pymetatile is the pythonic-way library for reading/writing metatile files, translating
-Tile <-> Metatile coordinates.
+This package contains helpers for building tools around OSM tiles.
 
-For example, read specific tile data from metatile quite easy:
+pyosm.point
+-----------
+
+Create points, convert coordinates.
+
+* **zxy_to_latlong(z, x, y)** -> LatLong
+* **latlong_to_zxy(lat, lng, zoom)** -> ZXY
 
 ```python
->>> import pymetatile
->>> with pymetatile.open("tests/data/0.meta", "rb") as mt:
-...     data = mt.readtile(1, 1)
-...     print(len(data))
-10439
+>>> import pyosm.point
+>>> p = pyosm.point.ZXY(z=10, x=697, y=321)
+>>> print(pyosm.point.zxy_to_latlong(p.z, p.x, p.y))
+LatLong(lat=55.5783, long=65.0391)
 
 ```
 
-MetatileFile
-------------
+pyosm.tile
+----------
 
-**pymetatile.open(filename, mode)** opens file for reading ("rb" mode) or writing ("wb").
+Create [osm][2] tile, get filename.
 
-Support *with* statement, *in* statement, *iterating* over Points):
+* **Tile.from_url(url)** -> Tile
+* **Tile.from_metatile(mt)** -> Tile
+* **Tile.filepath(url)** -> str
 
 ```python
->>> import pymetatile
->>> mt = pymetatile.open("tests/data/0.meta", "rb")
+>>> import pyosm.tile
+>>> t = pyosm.tile.Tile.from_url("/style/1/1/1.png")
+>>> print(t)
+Tile(z:1, x:1, y:1, style:style, ext:.png)
+>>> print(t.filepath("/cache"))
+/cache/style/1/1/1.png
+
+```
+
+pyosm.polygon
+-------------
+
+List of tiles can be grouped to the *closed* polygon. You can check if LatLong point inside this
+polygon or not (using [ray-casting][3] algorithm):
+
+```python
+>>> from pyosm import LatLong, Polygon
+>>> polygon = Polygon([LatLong(0, 0), LatLong(10, 0), LatLong(10, 10),
+...                    LatLong(0, 10), LatLong(0, 0)])
+>>> print(LatLong(1, 2) in polygon)
+True
+>>> print(LatLong(11, 12) in polygon)
+False
+
+```
+
+Also, a list of polygons can be grouped to Region (support *in* statement).
+
+pyosm.metatile
+--------------
+
+### Metatile
+
+Create metatile coordinates, get filename:
+
+* **Metatile.from_url(url)** -> Metatile
+* **Metatile.from_tile(Tile)** -> Metatile
+* **Metatile.filepath(basedir)** -> str
+
+```python
+>>> from pyosm import Metatile, Tile
+>>> tile = Tile(z=10, x=697, y=321, style="mapname", ext=".png")
+>>> mt = Metatile.from_tile(tile)
+>>> print(mt)
+Metatile(z:10, hashes:[0, 0, 33, 180, 128], style:mapname)
+>>> print(mt.filepath("/cache"))
+/cache/mapname/10/0/0/33/180/128.meta
+
+```
+
+### MetatileFile
+
+Try to implement metatile file encoder/decoder in pythonic way (inspired by Raymond Hettinger
+videos).
+
+* **pyosm.open(filename, mode)** -> MetatileFile: opens file for reading ("rb" mode) or
+  writing ("wb"). Returns file-like object.
+
+Support *with* statement, *in* statement, *iterating* over points:
+
+```python
+>>> import pyosm
+>>> mt = pyosm.metatile.open("tests/data/0.meta", "rb")
 >>> # check if tile (1, 2) contains in metatile
->>> print((1, 2) in mt, (10, 10) in mt)
-True False
+>>> print((1, 2) in mt)
+True
+>>> print((10, 10) in mt)
+False
 >>> # iterate over Points and print only points with x == 7
 >>> for point in mt:
 ...     if point.x == 7:
@@ -53,64 +122,10 @@ Point(x=1, y=1) 10439
 
 ```
 
-Attributes:
-
-* index: index table, dict {Point(x, y): Entry(offset, size), ...}
-* header: header data, Header(count, x, y, z)
-* size: square root of header.count
-
-Methods:
-
-* **readtile(x, y)** -> bytes
-* **readtiles()** -> dict {Point(x, y): bytes, ...}
-* **write(x, y, z, data)**, where z is the metatile zoom level, x, y is the lowest values,
+* **MetatileFile.readtile(x, y)** -> bytes
+* **MetatileFile.readtiles()** -> dict {Point(x, y): bytes, ...}
+* **MetatileFile.write(x, y, z, data)**, where z is the metatile zoom level, x, y is the lowest values,
   data is the dict {Point(x, y): bytes, ...}
-
-Metatile
---------
-
-Methods:
-
-* **from_url(url)** -> Metatile
-* **from_tile(Tile)** -> Metatile
-* **filepath(basedir)** -> str
-
-```python
->>> from pymetatile import Metatile, Tile
->>>
->>> tile = Tile(z=10, x=697, y=321, style="mapname", ext=".png")
->>> mt = Metatile.from_tile(tile)
->>> print(mt)
-Metatile(z:10, hashes:[0, 0, 33, 180, 128], style:mapname)
->>> print(len(mt))
-8
->>> print(mt.filepath("/cache"))
-/cache/mapname/10/0/0/33/180/128.meta
-
-```
-
-Tile
-----
-
-Methods:
-
-* **from_url(url)** -> Tile
-* **from_metatile(mt)** -> Tile
-* **filepath(url)** -> str
-
-```python
->>> from pymetatile import Metatile, Tile
->>>
->>> mt = Metatile.from_url("mapname/10/0/0/0/0/0.meta")
->>> tile = Tile.from_metatile(mt)
->>> print(tile)
-Tile(z:10, x:0, y:0, style:mapname, ext:.png)
->>> print(tile.filepath("/cache"))
-/cache/mapname/10/0/0.png
-
-```
-
-for more information, see info().
 
 metatile format description
 ---------------------------
@@ -118,3 +133,5 @@ metatile format description
 Can be found in [mod_tile][1] project:
 
 [1]: https://github.com/openstreetmap/mod_tile/blob/master/includes/metatile.h
+[2]: https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames#Python
+[3]: http://rosettacode.org/wiki/Ray-casting_algorithm
