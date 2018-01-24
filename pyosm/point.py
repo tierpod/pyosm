@@ -44,6 +44,15 @@ def latlong_to_zxy(lat, lng, zoom):
 
 
 class Bound(object):
+    """Represents square bound of ZXY points.
+
+    Args:
+        z (int): zoom level
+        min_x, max_x (int): minimum and maximum x coordinates
+        min_y, max_y (int): minimum and maximym y coordinates
+        flip_y (bool): flip y coordinate?
+    """
+
     def __init__(self, z, min_x, max_x, min_y, max_y, flip_y=False):
         self.z = z
         self.min_x = min_x
@@ -64,7 +73,8 @@ class Bound(object):
                                                     self.min_y, self.max_y)
 
     def __contains__(self, item):
-        """
+        """Returns True if item (point.ZXY) contains inside Bound.
+
         >>> bound = Bound(z=15, min_x=26248, max_x=26253, min_y=10821, max_y=10816)
         >>> print(ZXY(z=15, x=26248, y=10821) in bound)
         True
@@ -85,14 +95,26 @@ class Bound(object):
 
         return True
 
+
 class Bounds(object):
+    """Represends a list of Bound.
+    """
+
     def __init__(self, bounds):
+        """Args:
+            bounds: list of Bound
+        """
+
         self.bounds = bounds
 
     def __str__(self):
         return str(self.bounds)
 
     def for_zoom(self, z):
+        """Return bound for given z (int). Raises ValueError if bound for given zoom does
+        not exist in Bounds.
+        """
+
         for bound in self.bounds:
             if bound.z == z:
                 return bound
@@ -100,7 +122,8 @@ class Bounds(object):
         raise ValueError("bound for given zoom not found")
 
     def __contains__(self, item):
-        """
+        """Returns True if item (point.ZXY) inside Bounds.
+
         >>> bounds = Bounds([
         ...     Bound(z=12, min_x=3281, max_x=3281, min_y=1352, max_y=1352),
         ...     Bound(z=15, min_x=26248, max_x=26253, min_y=10821, max_y=10816),
@@ -118,3 +141,9 @@ class Bounds(object):
                 return True
 
         return False
+
+
+def flip_y_coord(zoom, y):
+    """Flips y (int) coordinate for given zoom (int)."""
+
+    return (2**zoom-1) - y
