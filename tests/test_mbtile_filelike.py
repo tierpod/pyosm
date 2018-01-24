@@ -38,6 +38,6 @@ def test_bounds_zooms():
 
 def test_readtile():
     with pyosm.mbtile.open("tests/data/0.mbtiles") as mb:
-        data = mb.readtile(1, 1, 1)
+        data = mb.readtile(1, 1, 0)
 
     assert len(data) == 26298

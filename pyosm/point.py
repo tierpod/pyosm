@@ -50,19 +50,14 @@ class Bound(object):
         z (int): zoom level
         min_x, max_x (int): minimum and maximum x coordinates
         min_y, max_y (int): minimum and maximym y coordinates
-        flip_y (bool): flip y coordinate?
     """
 
-    def __init__(self, z, min_x, max_x, min_y, max_y, flip_y=False):
+    def __init__(self, z, min_x, max_x, min_y, max_y):
         self.z = z
         self.min_x = min_x
         self.max_x = max_x
-        if flip_y:
-            self.min_y = flip_y_coord(z, max_y)
-            self.max_y = flip_y_coord(z, min_y)
-        else:
-            self.min_y = min_y
-            self.max_y = max_y
+        self.min_y = min_y
+        self.max_y = max_y
 
     def __repr__(self):
         return self.__str__()
@@ -157,9 +152,3 @@ class Bounds(object):
 
     def next(self):
         return next(self)
-
-
-def flip_y_coord(zoom, y):
-    """Flips y (int) coordinate for given zoom (int)."""
-
-    return (2**zoom-1) - y

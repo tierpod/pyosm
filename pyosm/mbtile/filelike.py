@@ -15,13 +15,14 @@ class MBTileFile(object):
     tile_row = y
     """
 
-    def __init__(self, filename, mode="rb"):
+    def __init__(self, filename, mode="rb", flip_y=True):
         if mode not in ("rb"):
             raise IOError("mode not supported:", mode)
 
         self.filename = filename
         self._conn = sqlite3.connect(filename)
         self._conn.row_factory = sqlite3.Row
+        self.flip_y = flip_y
 
         if mode == "rb":
             self.metadata = self._get_metadata()
@@ -53,9 +54,17 @@ class MBTileFile(object):
                         "min(tile_row) as min_y, max(tile_row) as max_y "
                         "FROM tiles WHERE zoom_level=?", (z,))
             res = cur.fetchone()
+
+            if self.flip_y:
+                min_y = flip_y_coord(z, int(res["max_y"]))
+                max_y = flip_y_coord(z, int(res["min_y"]))
+            else:
+                min_y = int(res["min_y"])
+                max_y = int(res["max_y"])
+
             result.append(Bound(z=z,
                                 min_x=int(res["min_x"]), max_x=int(res["max_x"]),
-                                min_y=int(res["min_y"]), max_y=int(res["max_y"]), flip_y=True))
+                                min_y=min_y, max_y=max_y))
 
         return Bounds(result)
 
@@ -79,14 +88,17 @@ class MBTileFile(object):
         """Read tile data for z, x, y (int) coordinates from mbtiles file. Return bytes (str).
 
         >>> mb = open("tests/data/0.mbtiles")
-        >>> data = mb.readtile(1, 1, 1)
+        >>> data = mb.readtile(1, 1, 0)
         >>> print(len(data))
         26298
-        >>> data = mb.readtile(999, 999, 999)
+        >>> data = mb.readtile(12, 999, 999)
         Traceback (most recent call last):
             ...
         ValueError: data not found for given (z, x, y)
         """
+
+        if self.flip_y:
+            y = flip_y_coord(z, y)
 
         cur = self._conn.cursor()
         cur.execute("SELECT tile_data FROM tiles "
@@ -98,7 +110,7 @@ class MBTileFile(object):
         return res["tile_data"]
 
 
-def open(file, mode="rb"):
+def open(file, mode="rb", flip_y=True):
     """Wrapper around sqlite3.connect() functions. Returns MBTile file-like object.
 
     Available modes:
@@ -107,6 +119,7 @@ def open(file, mode="rb"):
     Args:
         file (str): path to the file
         mode (str): mode in which the file is opened
+        flip_y (bool): flip y coordinate?
 
     >>> from pyosm.point import ZXY
     >>> with open("tests/data/0.mbtiles") as mb:
@@ -117,4 +130,16 @@ bounds='108.3703,52.01723,108.4303,52.04723', minzoom=0, maxzoom=17)
     Bound(z:12 x:3281-3281 y:1352-1352)
     """
 
-    return MBTileFile(file, mode)
+    return MBTileFile(file, mode, flip_y)
+
+
+def flip_y_coord(zoom, y):
+    """Flips y (int) coordinate for given zoom (int).
+
+    >>> flip_y_coord(12, 3281)
+    814
+    >>> flip_y_coord(12, 814)
+    3281
+    """
+
+    return (2**zoom-1) - y
