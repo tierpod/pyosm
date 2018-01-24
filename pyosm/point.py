@@ -134,6 +134,10 @@ class Bounds(object):
         True
         >>> print(ZXY(z=15, x=26247, y=10820) in bounds)
         False
+        >>> for b in bounds:
+        ...     print b
+        Bound(z:12 x:3281-3281 y:1352-1352)
+        Bound(z:15 x:26248-26253 y:10821-10816)
         """
 
         for bound in self.bounds:
@@ -141,6 +145,15 @@ class Bounds(object):
                 return True
 
         return False
+
+    def __iter__(self):
+        return iter(self.bounds)
+
+    def __next__(self):
+        return self.next()
+
+    def next(self):
+        return next(self)
 
 
 def flip_y_coord(zoom, y):
