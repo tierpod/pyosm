@@ -53,8 +53,9 @@ class MBTileFile(object):
                         "min(tile_row) as min_y, max(tile_row) as max_y "
                         "FROM tiles WHERE zoom_level=?", (z,))
             res = cur.fetchone()
-            result.append(Bound(z, int(res["min_x"]), int(res["max_x"]),
-                                int(res["min_y"]), int(res["max_y"]), flip_y=True))
+            result.append(Bound(z=z,
+                                min_x=int(res["min_x"]), max_x=int(res["max_x"]),
+                                min_y=int(res["min_y"]), max_y=int(res["max_y"]), flip_y=True))
 
         return Bounds(result)
 
@@ -111,11 +112,9 @@ def open(file, mode="rb"):
     >>> with open("tests/data/0.mbtiles") as mb:
     ...     print(mb)
     ...     print(mb.bounds.for_zoom(12))
-    ...     print(ZXY(z=12, x=3281, y=1352) in mb)
-    Metadata(center=u'108.4003,52.03223,9', format=u'png', \
-bounds=u'108.3703,52.01723,108.4303,52.04723', minzoom=0, maxzoom=17)
+    Metadata(center='108.4003,52.03223,9', format='png', \
+bounds='108.3703,52.01723,108.4303,52.04723', minzoom=0, maxzoom=17)
     Bound(z:12 x:3281-3281 y:1352-1352)
-    True
     """
 
     return MBTileFile(file, mode)

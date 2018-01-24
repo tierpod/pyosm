@@ -58,8 +58,8 @@ class Bound(object):
         self.min_x = min_x
         self.max_x = max_x
         if flip_y:
-            self.min_y = flip_y_coord(z, min_y)
-            self.max_y = flip_y_coord(z, max_y)
+            self.min_y = flip_y_coord(z, max_y)
+            self.max_y = flip_y_coord(z, min_y)
         else:
             self.min_y = min_y
             self.max_y = max_y
@@ -75,22 +75,25 @@ class Bound(object):
     def __contains__(self, item):
         """Returns True if item (point.ZXY) contains inside Bound.
 
-        >>> bound = Bound(z=15, min_x=26248, max_x=26253, min_y=10821, max_y=10816)
+        >>> bound = Bound(z=15, min_x=26248, max_x=26253, min_y=10816, max_y=10821)
         >>> print(ZXY(z=15, x=26248, y=10821) in bound)
         True
-        >>> print(ZXY(z=15, x=26249, y=10822) in bound)
+        >>> print(ZXY(z=15, x=26249, y=10817) in bound)
         True
         >>> print(ZXY(z=15, x=26247, y=10820) in bound)
+        False
+        >>> bound = Bound(z=1, min_x=1, max_x=1, min_y=0, max_y=0)
+        >>> print(ZXY(z=1, x=2, y=3) in bound)
         False
         """
 
         if item.z != self.z:
             return False
 
-        if item.x < self.min_x and item.x > self.max_x:
+        if item.x < self.min_x or item.x > self.max_x:
             return False
 
-        if item.y < self.min_y and item.y > self.max_y:
+        if item.y < self.min_y or item.y > self.max_y:
             return False
 
         return True
@@ -126,18 +129,18 @@ class Bounds(object):
 
         >>> bounds = Bounds([
         ...     Bound(z=12, min_x=3281, max_x=3281, min_y=1352, max_y=1352),
-        ...     Bound(z=15, min_x=26248, max_x=26253, min_y=10821, max_y=10816),
+        ...     Bound(z=15, min_x=26248, max_x=26253, min_y=10816, max_y=10821),
         ... ])
         >>> print(ZXY(z=12, x=3281, y=1352) in bounds)
         True
-        >>> print(ZXY(z=15, x=26249, y=10822) in bounds)
+        >>> print(ZXY(z=15, x=26248, y=10821) in bounds)
         True
         >>> print(ZXY(z=15, x=26247, y=10820) in bounds)
         False
         >>> for b in bounds:
-        ...     print b
+        ...     print(b)
         Bound(z:12 x:3281-3281 y:1352-1352)
-        Bound(z:15 x:26248-26253 y:10821-10816)
+        Bound(z:15 x:26248-26253 y:10816-10821)
         """
 
         for bound in self.bounds:
