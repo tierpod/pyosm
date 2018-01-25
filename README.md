@@ -90,7 +90,7 @@ videos).
 Support *with* statement, *in* statement, *iterating* over points:
 
 ```python
->>> import pyosm
+>>> import pyosm.metatile
 >>> mt = pyosm.metatile.open("tests/data/0.meta", "rb")
 >>> # check if tile (1, 2) contains in metatile
 >>> print((1, 2) in mt)
@@ -131,6 +131,27 @@ metatile format description
 ---------------------------
 
 Can be found in [mod_tile][1] project:
+
+pyosm.mbtile
+------------
+
+Decode mbtiles file, read tile from mbtiles file. Support *with*, *in* statements.
+
+```python
+>>> import pyosm.mbtile
+>>> from pyosm.point import ZXY
+>>> point = ZXY(z=1, x=1, y=0)
+>>> with pyosm.mbtile.open("tests/data/0.mbtiles") as mb:
+...   print(point in mb)
+...   print(len(mb.readtile(point.z, point.x, point.y)))
+True
+26298
+
+```
+
+* **pyosm.mbtile.open(file, mode, flip_y)** -> MBTileFile: open file for reading. Returns file-like object.
+
+* **MBTileFile.readtile(z, x, y)** -> buffer
 
 [1]: https://github.com/openstreetmap/mod_tile/blob/master/includes/metatile.h
 [2]: https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames#Python
