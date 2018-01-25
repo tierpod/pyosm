@@ -102,7 +102,7 @@ class MBTileFile(object):
 
         cur = self._conn.cursor()
         cur.execute("SELECT tile_data FROM tiles "
-                    "WHERE zoom_level=? AND tile_row=? AND tile_column=?;", (z, x, y))
+                    "WHERE zoom_level=? AND tile_column=? AND tile_row=?;", (z, x, y))
         res = cur.fetchone()
         if not res:
             raise ValueError("data not found for given (z, x, y)")
