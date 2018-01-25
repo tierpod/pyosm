@@ -68,7 +68,6 @@ class MetatileFile(object):
             self.header = self._decode_header()
             self.size = int(round(math.sqrt(self.header.count)))
             self.index = self._decode_index()
-            self._iter = iter(self.index)
 
     def _decode_header(self):
         size = len(META_MAGIC) + 4 * 4
@@ -216,7 +215,7 @@ class MetatileFile(object):
 
     # iteratate over metadata
     def __iter__(self):
-        return self
+        return iter(self.index)
 
     # python3
     def __next__(self):
@@ -224,8 +223,7 @@ class MetatileFile(object):
 
     # python2
     def next(self):
-        p = next(self._iter)
-        return Point(p.x, p.y)
+        return next(self)
 
 
 def open(file, mode="rb"):
