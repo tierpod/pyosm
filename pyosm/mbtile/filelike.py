@@ -107,6 +107,7 @@ class MBTileFile(object):
         if not res:
             raise ValueError("data not found for given (z, x, y)")
 
+        # TODO: return str or bytes?
         return res["tile_data"]
 
 
