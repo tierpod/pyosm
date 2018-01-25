@@ -3,7 +3,8 @@
 import pytest
 
 import context  # noqa: F401
-from pyosm import Tile, Metatile
+from pyosm.tile import Tile
+from pyosm.metatile import Metatile
 
 
 @pytest.mark.parametrize("basedir,tile,expected", [

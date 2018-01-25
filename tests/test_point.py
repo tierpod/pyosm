@@ -2,7 +2,7 @@
 
 import pytest
 import context  # noqa: F401
-from pyosm import LatLong, ZXY, zxy_to_latlong, latlong_to_zxy
+from pyosm.point import LatLong, ZXY, zxy_to_latlong, latlong_to_zxy
 
 
 @pytest.mark.parametrize("z,x,y,expected", [

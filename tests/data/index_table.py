@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import context  # noqa: F401
-from pyosm import Point
+from pyosm.point import Point
 from pyosm.metatile.filelike import Entry
 
 

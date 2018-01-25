@@ -6,7 +6,7 @@ import pytest
 
 import context  # noqa: F401
 import pyosm
-from pyosm import Point
+from pyosm.point import Point
 from data.index_table import test_index, test_file
 
 
@@ -34,8 +34,8 @@ def test_metatile_header():
 def test_metatile_index():
     errors = []
     with pyosm.metatile.open(test_file) as mt:
-        for x in range(mt.header.x, pyosm.META_SIZE):
-            for y in range(mt.header.y, pyosm.META_SIZE):
+        for x in range(mt.header.x, pyosm.metatile.META_SIZE):
+            for y in range(mt.header.y, pyosm.metatile.META_SIZE):
                 if (x, y) not in mt.index:
                     errors.append(x, y)
 

@@ -45,7 +45,8 @@ List of tiles can be grouped to the *closed* polygon. You can check if LatLong p
 polygon or not (using [ray-casting][3] algorithm):
 
 ```python
->>> from pyosm import LatLong, Polygon
+>>> from pyosm.point import LatLong
+>>> from pyosm.polygon import Polygon
 >>> polygon = Polygon([LatLong(0, 0), LatLong(10, 0), LatLong(10, 10),
 ...                    LatLong(0, 10), LatLong(0, 0)])
 >>> print(LatLong(1, 2) in polygon)
@@ -69,7 +70,8 @@ Create metatile coordinates, get filename:
 * **Metatile.filepath(basedir)** -> str
 
 ```python
->>> from pyosm import Metatile, Tile
+>>> from pyosm.tile import Tile
+>>> from pyosm.metatile import Metatile
 >>> tile = Tile(z=10, x=697, y=321, style="mapname", ext=".png")
 >>> mt = Metatile.from_tile(tile)
 >>> print(mt)

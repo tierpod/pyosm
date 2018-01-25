@@ -41,7 +41,7 @@ class Tile(object):
     def from_metatile(cls, mt, ext=".png"):
         """Creates new Tile from mt (pyosm.Metatile) object, use ext (str) as extension.
 
-        >>> from pyosm import Metatile
+        >>> from pyosm.metatile import Metatile
         >>> mt = Metatile.from_url("mapname/10/0/0/0/0/0.meta")
         >>> print(Tile.from_metatile(mt))
         Tile(z:10, x:0, y:0, style:mapname, ext:.png)

@@ -64,7 +64,7 @@ class Metatile(object):
     def __len__(self):
         """Calculates min size of tiles with data inside metatile.
 
-        >>> from pyosm import Tile
+        >>> from pyosm.tile import Tile
         >>> mt = Metatile.from_tile(Tile(z=1, x=1, y=1, style="mapname"))
         >>> print(len(mt))
         2
@@ -82,7 +82,7 @@ class Metatile(object):
     def xy(self):
         """Calculates metatile coordinates. Returns namedtuple of int (x, y).
 
-        >>> from pyosm import Tile
+        >>> from pyosm.tile import Tile
         >>> mt = Metatile.from_tile(Tile(z=10, x=697, y=321))
         >>> print(mt.xy())
         Point(x=696, y=320)
@@ -120,7 +120,7 @@ class Metatile(object):
     def from_tile(cls, t):
         """Create new Metatile from pyosm.point.Tile object.
 
-        >>> from pyosm import Tile
+        >>> from pyosm.tile import Tile
         >>> tile = Tile(z=10, x=697, y=321, style="mapname")
         >>> print(Metatile.from_tile(tile))
         Metatile(z:10, hashes:[0, 0, 33, 180, 128], style:mapname)

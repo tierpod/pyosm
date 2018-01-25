@@ -3,7 +3,8 @@
 """This package contains helpers for building tools around OSM tiles.
 """
 
-from pyosm.metatile import Metatile, META_SIZE  # noqa: F401
-from pyosm.point import Point, ZXY, LatLong, zxy_to_latlong, latlong_to_zxy  # noqa: F401
-from pyosm.polygon import Polygon, Region  # noqa: F401
-from pyosm.tile import Tile  # noqa: F401
+import pyosm.mbtile  # noqa: F401
+import pyosm.metatile  # noqa: F401
+import pyosm.point  # noqa: F401
+import pyosm.polygon  # noqa: F401
+import pyosm.tile  # noqa: F401
