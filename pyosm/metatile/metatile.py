@@ -33,8 +33,8 @@ class Metatile(object):
 
     def __str__(self):
         return "Metatile(z:{}, x:{}-{}, y:{}-{}, style:{})".format(self.z,
-                                                                   self.x, self.x + len(self),
-                                                                   self.y, self.y + len(self),
+                                                                   self.x, self.x + len(self) - 1,
+                                                                   self.y, self.y + len(self) - 1,
                                                                    self.style)
 
     def points(self):
@@ -81,7 +81,7 @@ class Metatile(object):
         """Creates new Metatile from metatile url (str with format style/z/h0/h1/h2/h3/h4.meta).
 
         >>> print(Metatile.from_url("mapname/10/0/0/33/180/128.meta"))
-        Metatile(z:10, x:696-704, y:320-328, style:mapname)
+        Metatile(z:10, x:696-703, y:320-327, style:mapname)
         """
 
         match = META_URL_RE.search(url)
@@ -100,7 +100,7 @@ class Metatile(object):
         >>> from pyosm.tile import Tile
         >>> tile = Tile(z=10, x=697, y=321, style="mapname")
         >>> print(Metatile.from_tile(tile))
-        Metatile(z:10, x:696-704, y:320-328, style:mapname)
+        Metatile(z:10, x:696-703, y:320-327, style:mapname)
         """
 
         hashes = xy_to_hashes(t.x, t.y)

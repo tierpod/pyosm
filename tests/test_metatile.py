@@ -9,7 +9,7 @@ from pyosm.metatile import Metatile
 
 def test_metatile_from_url():
     url = "mapname/10/0/0/33/180/128.meta"
-    metatile = "Metatile(z:10, x:696-704, y:320-328, style:mapname)"
+    metatile = "Metatile(z:10, x:696-703, y:320-327, style:mapname)"
     hashes = [0, 0, 33, 180, 128]
     mt = Metatile.from_url(url)
     assert str(mt) == metatile and mt.hashes == hashes
@@ -27,15 +27,15 @@ def test_metatile_from_url_raises(url):
 @pytest.mark.parametrize("tile,metatile,hashes", [
     (
         Tile(1, 1, 1, "mapname"),
-        "Metatile(z:1, x:0-2, y:0-2, style:mapname)", [0, 0, 0, 0, 0]
+        "Metatile(z:1, x:0-1, y:0-1, style:mapname)", [0, 0, 0, 0, 0]
     ),
     (
         Tile(10, 697, 321, "mapname"),
-        "Metatile(z:10, x:696-704, y:320-328, style:mapname)", [0, 0, 33, 180, 128]
+        "Metatile(z:10, x:696-703, y:320-327, style:mapname)", [0, 0, 33, 180, 128]
     ),
     (
         Tile(10, 697, 321, ""),
-        "Metatile(z:10, x:696-704, y:320-328, style:)", [0, 0, 33, 180, 128]
+        "Metatile(z:10, x:696-703, y:320-327, style:)", [0, 0, 33, 180, 128]
     ),
 ])
 def test_metatile_from_tile(tile, metatile, hashes):
