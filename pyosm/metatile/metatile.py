@@ -30,7 +30,6 @@ class Metatile(object):
         self.style = style
         self.ext = META_EXT
         self.x, self.y = hashes_to_xy(hashes)
-        self._iter = iter(self.points())
 
     def __str__(self):
         return "Metatile(z:{}, x:{}-{}, y:{}-{}, style:{})".format(self.z,
@@ -43,13 +42,13 @@ class Metatile(object):
         return [Point(xx, yy) for xx in range(x, x + len(self)) for yy in range(y, y + len(self))]
 
     def __iter__(self):
-        return self
+        return iter(self.points())
 
     def __next__(self):
         return self.next()
 
     def next(self):
-        return next(self._iter)
+        return next(self)
 
     def filepath(self, basedir=""):
         """Calculates metatile filepath using basedir (str).
