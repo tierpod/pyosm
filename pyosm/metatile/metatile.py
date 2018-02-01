@@ -18,9 +18,10 @@ META_URL_RE = re.compile(r"(\w+)/(\d+)/(\d+)/(\d+)/(\d+)/(\d+)/(\d+)\.meta")
 
 class Metatile(object):
     """Attributes:
-        z (int): zoom coordinate
+        z, x, y (int): zoom coordinate
         hashes (list of 5 int): metatile hashes
         style (str): style name
+        ext (str): metatile extension (".meta")
     """
 
     def __init__(self, z, hashes, style):
@@ -28,13 +29,17 @@ class Metatile(object):
         self.hashes = hashes
         self.style = style
         self.ext = META_EXT
+        self.x, self.y = hashes_to_xy(hashes)
         self._iter = iter(self.points())
 
     def __str__(self):
-        return "Metatile(z:{}, hashes:{}, style:{})".format(self.z, self.hashes, self.style)
+        return "Metatile(z:{}, x:{}-{}, y:{}-{}, style:{})".format(self.z,
+                                                                   self.x, self.x + len(self),
+                                                                   self.y, self.y + len(self),
+                                                                   self.style)
 
     def points(self):
-        x, y = self.xy()
+        x, y = self.x, self.y
         return [Point(xx, yy) for xx in range(x, x + len(self)) for yy in range(y, y + len(self))]
 
     def __iter__(self):
@@ -72,39 +77,12 @@ class Metatile(object):
 
         return min(META_SIZE, 1 << self.z)
 
-    # def xy_box(self):
-    #     x, y = self.xy()
-    #     xx = range(x, x+self.size())
-    #     yy = range(y, y+self.size())
-    #
-    #     return (xx, yy)
-
-    def xy(self):
-        """Calculates metatile coordinates. Returns namedtuple of int (x, y).
-
-        >>> from pyosm.tile import Tile
-        >>> mt = Metatile.from_tile(Tile(z=10, x=697, y=321))
-        >>> print(mt.xy())
-        Point(x=696, y=320)
-        """
-
-        x = 0
-        y = 0
-
-        for i in range(5):
-            x <<= 4
-            y <<= 4
-            x |= (self.hashes[i] & 0xf0) >> 4
-            y |= (self.hashes[i] & 0x0f)
-
-        return Point(x, y)
-
     @classmethod
     def from_url(cls, url):
         """Creates new Metatile from metatile url (str with format style/z/h0/h1/h2/h3/h4.meta).
 
-        >>> print(Metatile.from_url("mapname/10/0/1/2/3/4.meta"))
-        Metatile(z:10, hashes:[0, 1, 2, 3, 4], style:mapname)
+        >>> print(Metatile.from_url("mapname/10/0/0/33/180/128.meta"))
+        Metatile(z:10, x:696-704, y:320-328, style:mapname)
         """
 
         match = META_URL_RE.search(url)
@@ -123,19 +101,40 @@ class Metatile(object):
         >>> from pyosm.tile import Tile
         >>> tile = Tile(z=10, x=697, y=321, style="mapname")
         >>> print(Metatile.from_tile(tile))
-        Metatile(z:10, hashes:[0, 0, 33, 180, 128], style:mapname)
+        Metatile(z:10, x:696-704, y:320-328, style:mapname)
         """
 
-        mask = META_SIZE - 1
-        hashes = []
-
-        x = t.x & ~mask
-        y = t.y & ~mask
-
-        for _ in range(5):
-            hashes.append(((x & 0x0f) << 4) | (y & 0x0f))
-            x >>= 4
-            y >>= 4
-        hashes.reverse()
-
+        hashes = xy_to_hashes(t.x, t.y)
         return Metatile(z=t.z, hashes=hashes, style=t.style)
+
+
+def hashes_to_xy(hashes):
+    """Calculates metatile x, y (int) coordinates from hashes (list of 5 ints). Returns Point(x, y).
+    """
+
+    x = 0
+    y = 0
+
+    for i in range(5):
+        x <<= 4
+        y <<= 4
+        x |= (hashes[i] & 0xf0) >> 4
+        y |= (hashes[i] & 0x0f)
+
+    return Point(x, y)
+
+
+def xy_to_hashes(x, y):
+    """Calculates metatile hashes (list of 5 ints) from x, y (int) coordinates."""
+
+    hashes = []
+    x = x & ~(META_SIZE - 1)
+    y = y & ~(META_SIZE - 1)
+
+    for _ in range(5):
+        hashes.append(((x & 0x0f) << 4) | (y & 0x0f))
+        x >>= 4
+        y >>= 4
+    hashes.reverse()
+
+    return hashes

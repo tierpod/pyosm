@@ -8,10 +8,11 @@ from pyosm.metatile import Metatile
 
 
 def test_metatile_from_url():
-    url = "mapname/10/0/1/2/3/4.meta"
-    expected = "Metatile(z:10, hashes:[0, 1, 2, 3, 4], style:mapname)"
+    url = "mapname/10/0/0/33/180/128.meta"
+    metatile = "Metatile(z:10, x:696-704, y:320-328, style:mapname)"
+    hashes = [0, 0, 33, 180, 128]
     mt = Metatile.from_url(url)
-    assert str(mt) == expected
+    assert str(mt) == metatile and mt.hashes == hashes
 
 
 @pytest.mark.parametrize("url", [
@@ -23,14 +24,23 @@ def test_metatile_from_url_raises(url):
         Metatile.from_url(url)
 
 
-@pytest.mark.parametrize("tile,expected", [
-    (Tile(1, 1, 1, "mapname"), "Metatile(z:1, hashes:[0, 0, 0, 0, 0], style:mapname)"),
-    (Tile(10, 697, 321, "mapname"), "Metatile(z:10, hashes:[0, 0, 33, 180, 128], style:mapname)"),
-    (Tile(10, 697, 321, ""), "Metatile(z:10, hashes:[0, 0, 33, 180, 128], style:)"),
+@pytest.mark.parametrize("tile,metatile,hashes", [
+    (
+        Tile(1, 1, 1, "mapname"),
+        "Metatile(z:1, x:0-2, y:0-2, style:mapname)", [0, 0, 0, 0, 0]
+    ),
+    (
+        Tile(10, 697, 321, "mapname"),
+        "Metatile(z:10, x:696-704, y:320-328, style:mapname)", [0, 0, 33, 180, 128]
+    ),
+    (
+        Tile(10, 697, 321, ""),
+        "Metatile(z:10, x:696-704, y:320-328, style:)", [0, 0, 33, 180, 128]
+    ),
 ])
-def test_metatile_from_tile(tile, expected):
+def test_metatile_from_tile(tile, metatile, hashes):
     mt = Metatile.from_tile(tile)
-    assert str(mt) == expected
+    assert str(mt) == metatile and mt.hashes == hashes
 
 
 @pytest.mark.parametrize("tile,expected", [

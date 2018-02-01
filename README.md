@@ -75,7 +75,7 @@ Create metatile coordinates, get filename:
 >>> tile = Tile(z=10, x=697, y=321, style="mapname", ext=".png")
 >>> mt = Metatile.from_tile(tile)
 >>> print(mt)
-Metatile(z:10, hashes:[0, 0, 33, 180, 128], style:mapname)
+Metatile(z:10, x:696-704, y:320-328, style:mapname)
 >>> print(mt.filepath("/cache"))
 /cache/mapname/10/0/0/33/180/128.meta
 
