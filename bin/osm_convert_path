@@ -1,8 +1,9 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 import argparse
 
-from pyosm import Tile, Metatile
+from pyosm.tile import Tile
+from pyosm.metatile import Metatile
 
 
 def parse_args():
