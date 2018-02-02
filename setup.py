@@ -9,7 +9,7 @@ setup(
     description="Library for building OSM tools",
     url="https://github.com/tierpod/pyosm",
     author="Pavel Podkorytov",
-    authoer_email="pod.pavel@gmail.com",
+    author_email="pod.pavel@gmail.com",
     license='MIT',
     classifiers=[
         "Development Status :: 3 - Alpha",

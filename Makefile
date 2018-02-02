@@ -40,3 +40,7 @@ clean:
 	find ./ -name '*.pyc' -delete
 	# clean python3-stuff
 	find ./ -name __pycache__ -type d -print | xargs rm -r
+
+.PHONY: archive
+archive:
+	python setup.py sdist
