@@ -8,3 +8,4 @@ dist
 build
 venv
 .vscode
+.pytest_cache
