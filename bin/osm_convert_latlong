@@ -1,0 +1,63 @@
+#!/usr/bin/env python
+"""Convert latitude and longtitude bounds to tiles coordinates."""
+
+import argparse
+
+from pyosm.metatile import Metatile
+from pyosm.point import latlong_to_zxy, Bound, Bounds
+from pyosm.tile import Tile
+
+
+DEFAULT_BASEDIR = "/var/lib/mod_tile"
+DEFAULT_EXT = ".png"
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(description=("Convert latitude and longtitude bounds to tiles "
+                                                  "coordinates."))
+    parser.add_argument("-d", "--basedir", default=DEFAULT_BASEDIR, help="output basedir prefix")
+    parser.add_argument("-e", "--ext", default=DEFAULT_EXT, help="output extension")
+    parser.add_argument("-m", "--meta", action="store_true", help="convert path to metatile?")
+    parser.add_argument("--lng", required=True, nargs=2, type=float,
+                        help="longtitude coordinates")
+    parser.add_argument("--lat", required=True, nargs=2, type=float,
+                        help="latitude coordinates")
+    parser.add_argument("--zooms", default=[10, 10], nargs=2, type=int,
+                        help="zoom coordinates")
+    return parser.parse_args()
+
+
+def main():
+    args = parse_args()
+
+    zoom_start = min(args.zooms)
+    zoom_end = max(args.zooms)
+    lat_start = max(args.lat)
+    lat_end = min(args.lat)
+    lng_start = min(args.lng)
+    lng_end = max(args.lng)
+
+    bounds = Bounds(bounds=[])
+    for zoom in range(zoom_start, zoom_end + 1):
+        p_start = latlong_to_zxy(lat=lat_start, lng=lng_start, zoom=zoom)
+        p_end = latlong_to_zxy(lat=lat_end, lng=lng_end, zoom=zoom)
+
+        bounds.append(Bound(zoom, p_start.x, p_end.x, p_start.y, p_end.y))
+
+    prev_path = ""
+    for point in bounds.points():
+        tile = Tile(z=point.z, x=point.x, y=point.y, style="")
+        if args.meta:
+            metatile = Metatile.from_tile(tile)
+            path = metatile.filepath(args.basedir)
+            if path == prev_path:
+                continue
+            prev_path = path
+        else:
+            path = tile.filepath(args.basedir)
+
+        print(path)
+
+
+if __name__ == "__main__":
+    main()
