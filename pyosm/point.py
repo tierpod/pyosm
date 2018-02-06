@@ -93,6 +93,20 @@ class Bound(object):
 
         return True
 
+    def points(self):
+        """Returns generator of ZXY points inside Bound.
+
+        >>> bound = Bound(z=4, min_x=9, max_x=10, min_y=6, max_y=6)
+        >>> for b in bound.points():
+        ...     print(b)
+        ZXY(z=4, x=9, y=6)
+        ZXY(z=4, x=10, y=6)
+        """
+
+        for x in xrange(self.min_x, self.max_x + 1):
+            for y in xrange(self.min_y, self.max_y + 1):
+                yield ZXY(z=self.z, x=x, y=y)
+
 
 class Bounds(object):
     """Represends a list of Bound.
@@ -152,3 +166,15 @@ class Bounds(object):
 
     def next(self):
         return next(self)
+
+    def append(self, bound):
+        """Append bound (Bound) to Bounds."""
+
+        self.bounds.append(bound)
+
+    def points(self):
+        """"Returns generator of ZXY points inside Bounds."""
+
+        for bound in self.bounds:
+            for point in bound.points():
+                yield point
