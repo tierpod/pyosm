@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="pyosm",
-    version="0.6",
+    version="0.7",
     description="Library for building OSM tools",
     url="https://github.com/tierpod/pyosm",
     author="Pavel Podkorytov",
