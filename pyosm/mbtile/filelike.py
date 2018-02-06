@@ -44,7 +44,8 @@ class MBTileFile(object):
             if "maxzoom" in row:
                 maxzoom = row["value"]
 
-        return Metadata(center, format_, bounds, int(minzoom), int(maxzoom))
+        # TODO: parse metadata values to float and int
+        return Metadata(str(center), str(format_), str(bounds), int(minzoom), int(maxzoom))
 
     def _get_bounds(self):
         result = []
