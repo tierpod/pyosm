@@ -16,6 +16,5 @@ setup(
         "Programming Language :: Python :: 3",
     ],
     packages=find_packages(),
-    install_requires=["requests"],
     scripts=["bin/osm_convert_path", "bin/osm_unpack_metatile", "bin/osm_convert_latlong"],
 )
