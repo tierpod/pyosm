@@ -1,0 +1,54 @@
+#!/usr/bin/env python
+
+import argparse
+import os
+
+
+from pyosm.mbtile import open as open_mbtile
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(description="Unpack mbtile to dir.")
+    parser.add_argument("-o", "--outdir", required=True, help="output directory")
+    parser.add_argument("-e", "--ext", default=".png", help="output files extension")
+    parser.add_argument("-c", "--center", action="store_true", help="extract only center tiles")
+    parser.add_argument("MBTILE", nargs="+", help="input mbtile files")
+    return parser.parse_args()
+
+
+def unpack(mb, out, ext, center):
+    for zoom in range(mb.metadata.minzoom, mb.metadata.maxzoom + 1):
+        bound = mb.bounds.for_zoom(zoom)
+        # unpack only center tiles
+        if center:
+            x = bound.min_x + (bound.max_x - bound.min_x) / 2
+            y = bound.min_y + (bound.max_y - bound.min_y) / 2
+            data = mb.readtile(z=zoom, x=x, y=y)
+            make_dir_and_write(out=out, ext=ext, data=data, z=zoom, x=x, y=y)
+        # unpack all tiles
+        else:
+            for p in bound.points():
+                data = mb.readtile(z=p.z, x=p.x, y=p.y)
+                make_dir_and_write(out=out, ext=ext, data=data, z=zoom, x=p.x, y=p.y)
+
+
+def make_dir_and_write(out, ext, data, z, x, y):
+    out_dir = os.path.join(out, str(z), str(x))
+    out_file = str(y) + ext
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
+
+        with open(os.path.join(out_dir, out_file), "wb") as f:
+            f.write(data)
+
+
+def main():
+    args = parse_args()
+    for path in args.MBTILE:
+        print("unpack %s -> %s" % (path, args.outdir))
+        with open_mbtile(path, "rb") as mb:
+            unpack(mb, args.outdir, args.ext, args.center)
+
+
+if __name__ == "__main__":
+    main()
