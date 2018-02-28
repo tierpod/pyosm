@@ -6,31 +6,31 @@ VENV    := venv
 
 .PHONY: test
 test:
-	py.test-$(PY)
+	py.test
 
 .PHONY: doctest
 doctest:
-	find $(PACKAGE) -name '*.py' -print | xargs python$(PY) -m doctest
-	python$(PY) -m doctest README.md
+	find $(PACKAGE) -name '*.py' -print | xargs python -m doctest
+	python -m doctest README.md
 
 $(VENV):
 	virtualenv -p /usr/bin/python$(PY) $(VENV)
 
 .PHONY: init-dev
 init-dev:
-	pip$(PY) install -U -r requirements-dev.txt
-	pip$(PY) install -U --editable .
+	pip install -U -r requirements-dev.txt
+	pip install -U --editable .
 
 .PHONY: install-user
 install-user:
-	python$(PY) setup.py install --user
+	python setup.py install --user
 
 .PHONY: uninstall
 uninstall:
-	pip$(PY) uninstall $(PACKAGE)
+	pip uninstall $(PACKAGE)
 
 .PHONY: install
-	python$(PY) setup.py install
+	python setup.py install
 
 .PHONY: clean
 clean:
