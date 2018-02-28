@@ -135,11 +135,8 @@ Point(x=7, y=7)
 >>> tiles_data = mt.readtiles()
 >>> for point, data in tiles_data.items():
 ...     if data:
-...         print(point, len(data))
-Point(x=0, y=0) 25093
-Point(x=0, y=1) 11330
-Point(x=1, y=0) 26298
-Point(x=1, y=1) 10439
+...         # do something with point(z, x, y) or data (bytes)
+...         pass
 >>> mt.close()
 
 ```
