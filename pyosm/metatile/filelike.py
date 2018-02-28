@@ -89,8 +89,8 @@ class MetatileFile(object):
         return index
 
     def __repr__(self):
-        return "{}.{}({})".format(self.__class__.__module__, self.__class__.__name__,
-                                  self.header)
+        return "{0}.{1}({2})".format(self.__class__.__module__, self.__class__.__name__,
+                                     self.header)
 
     def __str__(self):
         return str(self.header)

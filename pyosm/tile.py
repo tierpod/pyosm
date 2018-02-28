@@ -24,8 +24,7 @@ class Tile(object):
         self.style = style
 
     def __str__(self):
-        return "Tile(z:{}, x:{}, y:{}, style:{}, ext:{})".format(self.z, self.x, self.y, self.style,
-                                                                 self.ext)
+        return "Tile(z:{z}, x:{x}, y:{y}, style:{style}, ext:{ext})".format(**self.__dict__)
 
     def filepath(self, basedir=""):
         """Calculates tile filepath using basedir (str).

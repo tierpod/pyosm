@@ -14,7 +14,7 @@ class Polygon(object):
         self._points = points
 
     def __str__(self):
-        return "{}".format(self._points)
+        return "{0}".format(self._points)
 
     def __len__(self):
         return len(self._points)

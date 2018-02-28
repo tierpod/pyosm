@@ -63,9 +63,7 @@ class Bound(object):
         return self.__str__()
 
     def __str__(self):
-        return "Bound(z:{} x:{}-{} y:{}-{})".format(self.z,
-                                                    self.min_x, self.max_x,
-                                                    self.min_y, self.max_y)
+        return "Bound(z:{z} x:{min_x}-{max_x} y:{min_y}-{max_y})".format(**self.__dict__)
 
     def __contains__(self, item):
         """Returns True if item (point.ZXY) contains inside Bound.

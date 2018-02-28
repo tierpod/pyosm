@@ -12,7 +12,7 @@ class Region(object):
         return len(self._polygons)
 
     def __str__(self):
-        return "{}".format(self._polygons)
+        return "{0}".format(self._polygons)
 
     def __contains__(self, item):
         """Returns True if LatLong item inside region.

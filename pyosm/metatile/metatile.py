@@ -32,10 +32,10 @@ class Metatile(object):
         self.x, self.y = hashes_to_xy(hashes)
 
     def __str__(self):
-        return "Metatile(z:{}, x:{}-{}, y:{}-{}, style:{})".format(self.z,
-                                                                   self.x, self.x + len(self) - 1,
-                                                                   self.y, self.y + len(self) - 1,
-                                                                   self.style)
+        mx = self.x + len(self) - 1
+        my = self.y + len(self) - 1
+        return "Metatile(z:{z}, x:{x}-{mx}, y:{y}-{my}, style:{style})".format(mx=mx, my=my,
+                                                                               **self.__dict__)
 
     def points(self):
         x, y = self.x, self.y
