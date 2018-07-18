@@ -10,6 +10,21 @@ from pyosm.tile import Tile
 
 DEFAULT_BASEDIR = "/var/lib/mod_tile"
 DEFAULT_EXT = ".png"
+BUFFER_LEN = 1000
+
+
+class Buffer(object):
+    def __init__(self):
+        self._buffer = []
+
+    def append(self, i):
+        if len(self._buffer) > BUFFER_LEN:
+            self._buffer.pop(0)
+
+        self._buffer.append(i)
+
+    def __contains__(self, i):
+        return i in self._buffer
 
 
 def parse_args():
@@ -44,15 +59,16 @@ def main():
 
         bounds.append(Bound(zoom, p_start.x, p_end.x, p_start.y, p_end.y))
 
-    prev_path = ""
+    buf = Buffer()
+
     for point in bounds.points():
         tile = Tile(z=point.z, x=point.x, y=point.y, style="")
         if args.meta:
             metatile = Metatile.from_tile(tile)
             path = metatile.filepath(args.basedir)
-            if path == prev_path:
+            if path in buf:
                 continue
-            prev_path = path
+            buf.append(path)
         else:
             path = tile.filepath(args.basedir)
 
