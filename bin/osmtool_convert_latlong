@@ -4,7 +4,7 @@
 import argparse
 
 from pyosm.metatile import Metatile
-from pyosm.point import latlong_to_zxy, Bound, Bounds
+from pyosm.point import latlong_to_zxy, str_to_range, Bound, Bounds
 from pyosm.tile import Tile
 
 
@@ -33,24 +33,21 @@ def parse_args():
     parser.add_argument("-d", "--basedir", default=DEFAULT_BASEDIR, help="output basedir prefix")
     parser.add_argument("-e", "--ext", default=DEFAULT_EXT, help="output extension")
     parser.add_argument("-m", "--meta", action="store_true", help="convert path to metatile?")
-    parser.add_argument("--lng", required=True, nargs=2, type=float,
-                        help="longtitude coordinates")
-    parser.add_argument("--lat", required=True, nargs=2, type=float,
-                        help="latitude coordinates")
-    parser.add_argument("--zooms", default=[10, 10], nargs=2, type=int,
-                        help="zoom coordinates")
+    parser.add_argument("--lng", required=True, type=str, metavar="LNG1[:LNG2]",
+                        help="longtitude coordinate (or range LNG1:LNG2)")
+    parser.add_argument("--lat", required=True, type=str, metavar="LAT1[:LAT2]",
+                        help="latitude coordinate (or range LAT1:LAT2")
+    parser.add_argument("--zooms", default="10:10", type=str, metavar="Z1[:Z2]",
+                        help="zoom coordinate (or range Z1:Z2)")
     return parser.parse_args()
 
 
 def main():
     args = parse_args()
 
-    zoom_start = min(args.zooms)
-    zoom_end = max(args.zooms)
-    lat_start = max(args.lat)
-    lat_end = min(args.lat)
-    lng_start = min(args.lng)
-    lng_end = max(args.lng)
+    zoom_start, zoom_end = str_to_range(args.zooms, output=int)
+    lat_start, lat_end = str_to_range(args.lat)
+    lng_start, lng_end = str_to_range(args.lng)
 
     bounds = Bounds(bounds=[])
     for zoom in range(zoom_start, zoom_end + 1):

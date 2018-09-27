@@ -43,6 +43,33 @@ def latlong_to_zxy(lat, lng, zoom):
     return ZXY(zoom, x, y)
 
 
+def str_to_range(s, delim=":", output=float):
+    """Converts string `s` like "S1:S2" to pair (S1, S2) (S1 and S2 has type `output`).
+
+    >>> str_to_range("10")
+    (10.0, 10.0)
+    >>> str_to_range("10:20")
+    (10.0, 20.0)
+    >>> str_to_range("20:10", output=int)
+    (10, 20)
+    >>> str_to_range("10:20:30")
+    Traceback (most recent call last):
+    ...
+    ValueError: wrong range value
+    """
+
+    items = s.split(delim)
+
+    if len(items) == 1:
+        items = [items[0], items[0]]
+
+    if len(items) != 2:
+        raise ValueError("wrong range value")
+
+    items = [output(i) for i in items]
+    return min(items), max(items)
+
+
 class Bound(object):
     """Represents square bound of ZXY points.
 
