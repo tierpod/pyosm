@@ -38,8 +38,8 @@ def make_dir_and_write(out, ext, data, z, x, y):
     if not os.path.exists(out_dir):
         os.makedirs(out_dir)
 
-        with open(os.path.join(out_dir, out_file), "wb") as f:
-            f.write(data)
+    with open(os.path.join(out_dir, out_file), "wb") as f:
+        f.write(data)
 
 
 def main():
