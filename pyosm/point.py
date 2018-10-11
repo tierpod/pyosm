@@ -138,6 +138,20 @@ class Bound(object):
             for y in xrange(self.min_y, self.max_y + 1):
                 yield ZXY(z=self.z, x=x, y=y)
 
+    @classmethod
+    def from_latlong_bound(cls, b):
+        """Creates Bound from LatLongBound.
+
+        >>> ll_bound = LatLongBound(10, 55.6992, 55.2031, 64.9662, 66.3121)
+        >>> bound = Bound.from_latlong_bound(ll_bound)
+        >>> print(bound)
+        Bound(z:10 x:696-700 y:320-322)
+        """
+
+        p_start = latlong_to_zxy(lat=b.start_ll.lat, lng=b.start_ll.long, zoom=b.z)
+        p_end = latlong_to_zxy(lat=b.end_ll.lat, lng=b.end_ll.long, zoom=b.z)
+        return cls(z=b.z, min_x=p_start.x, max_x=p_end.x, min_y=p_start.y, max_y=p_end.y)
+
 
 class Bounds(object):
     """Represends a list of Bound.
@@ -209,3 +223,35 @@ class Bounds(object):
         for bound in self.bounds:
             for point in bound.points():
                 yield point
+
+
+class LatLongBound(object):
+    """Represents square bound of LatLongs.
+
+    Args:
+        lat1, lat2 (float): pair of latitude coordinates
+        lng1, lng2 (float): pair of langtitude coordinates
+        start_ll (LatLong): start point of bound
+        end_ll (LatLong): end point of bound
+    """
+
+    def __init__(self, z, lat1, lat2, lng1, lng2):
+        """
+        >>> ll_bound = LatLongBound(10, 55.6992, 55.2031, 64.9662, 66.3121)
+        >>> print(ll_bound)
+        LatLongBound(z:10 LatLong(lat=55.6992, long=64.9662)-LatLong(lat=55.2031, long=66.3121)
+        >>> ll_bound = LatLongBound(10, 55.2031, 55.6992, 66.3121, 64.9662)
+        >>> print(ll_bound)
+        LatLongBound(z:10 LatLong(lat=55.6992, long=64.9662)-LatLong(lat=55.2031, long=66.3121)
+        """
+
+        self.z = z
+        start_lat = max(lat1, lat2)
+        start_lng = min(lng1, lng2)
+        end_lat = min(lat1, lat2)
+        end_lng = max(lng1, lng2)
+        self.start_ll = LatLong(lat=start_lat, long=start_lng)
+        self.end_ll = LatLong(lat=end_lat, long=end_lng)
+
+    def __str__(self):
+        return "LatLongBound(z:{z} {start_ll}-{end_ll}".format(**self.__dict__)

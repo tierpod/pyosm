@@ -4,7 +4,7 @@
 import argparse
 
 from pyosm.metatile import Metatile
-from pyosm.point import latlong_to_zxy, str_to_range, Bound, Bounds
+from pyosm.point import latlong_to_zxy, str_to_range, Bound, Bounds, LatLongBound
 from pyosm.tile import Tile
 
 
@@ -45,16 +45,14 @@ def parse_args():
 def main():
     args = parse_args()
 
-    zoom_start, zoom_end = str_to_range(args.zooms, output=int)
-    lat_start, lat_end = str_to_range(args.lat)
-    lng_start, lng_end = str_to_range(args.lng)
+    zooms = str_to_range(args.zooms, output=int)
+    lat = str_to_range(args.lat)
+    lng = str_to_range(args.lng)
 
     bounds = Bounds(bounds=[])
-    for zoom in range(zoom_start, zoom_end + 1):
-        p_start = latlong_to_zxy(lat=lat_start, lng=lng_start, zoom=zoom)
-        p_end = latlong_to_zxy(lat=lat_end, lng=lng_end, zoom=zoom)
-
-        bounds.append(Bound(zoom, p_start.x, p_end.x, p_start.y, p_end.y))
+    for zoom in range(min(zooms), max(zooms) + 1):
+        ll_bound = LatLongBound(z=zoom, lat1=lat[0], lat2=lat[1], lng1=lng[0], lng2=lng[1])
+        bounds.append(Bound.from_latlong_bound(ll_bound))
 
     buf = Buffer()
 
