@@ -5,6 +5,12 @@
 import math
 from collections import namedtuple
 
+# python>=3.6
+try:
+    xrange
+except NameError:
+    xrange = range
+
 # Point represents point with x, y (int) coordinates.
 Point = namedtuple("Point", "x, y")
 # LatLong represents latitude and longtitude (float) coordinates.
