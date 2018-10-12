@@ -107,6 +107,32 @@ class Metatile(object):
 
         return True
 
+    def __eq__(self, metatile):
+        """Return True if metatile (pyosm.metatile.Metatile) equals to Metatile.
+
+        >>> mt1 = Metatile.from_url("mapname/10/0/0/33/180/128.meta")
+        >>> mt2 = Metatile.from_url("mapname/10/0/0/33/180/128.meta")
+        >>> mt3 = Metatile.from_url("mapname/10/0/0/33/180/0.meta")
+        >>> mt1 == mt2
+        True
+        >>> mt1 == mt3
+        False
+        """
+
+        if self.style != metatile.style:
+            return False
+
+        if self.z != metatile.z:
+            return False
+
+        if self.x != metatile.x:
+            return False
+
+        if self.y != metatile.y:
+            return False
+
+        return True
+
     @classmethod
     def from_url(cls, url):
         """Creates new Metatile from metatile url (str with format style/z/h0/h1/h2/h3/h4.meta).
@@ -168,3 +194,26 @@ def xy_to_hashes(x, y):
     hashes.reverse()
 
     return hashes
+
+
+def bound_to_metatiles(bound, style=""):
+    """Split bound (pyosm.point.Bound) to list of pyosm.metatile.Metatile.
+
+    >>> from pyosm.point import Bound
+    >>> bound = Bound(z=10, min_x=692, min_y=318, max_x=703, max_y=324)
+    >>> metatiles = bound_to_metatiles(bound, style="mapname")
+    >>> for mt in metatiles:
+    ...     print(mt)
+    Metatile(z:10, x:688-695, y:312-319, style:mapname)
+    Metatile(z:10, x:688-695, y:320-327, style:mapname)
+    Metatile(z:10, x:696-703, y:312-319, style:mapname)
+    Metatile(z:10, x:696-703, y:320-327, style:mapname)
+    """
+
+    metatiles = []
+    for point in bound.points():
+        hashes = xy_to_hashes(point.x, point.y)
+        metatile = Metatile(z=bound.z, hashes=hashes, style=style)
+        if metatile not in metatiles:
+            metatiles.append(metatile)
+    return metatiles

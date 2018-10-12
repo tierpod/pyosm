@@ -3,28 +3,13 @@
 
 import argparse
 
-from pyosm.metatile import Metatile
-from pyosm.point import str_to_range, Bound, Bounds, LatLongBound
+from pyosm.metatile import bound_to_metatiles
+from pyosm.point import str_to_range, Bound, LatLongBound
 from pyosm.tile import Tile
 
 
 DEFAULT_BASEDIR = "/var/lib/mod_tile"
 DEFAULT_EXT = ".png"
-BUFFER_LEN = 1000
-
-
-class Buffer(object):
-    def __init__(self):
-        self._buffer = []
-
-    def append(self, i):
-        if len(self._buffer) > BUFFER_LEN:
-            self._buffer.pop(0)
-
-        self._buffer.append(i)
-
-    def __contains__(self, i):
-        return i in self._buffer
 
 
 def parse_args():
@@ -42,6 +27,18 @@ def parse_args():
     return parser.parse_args()
 
 
+def print_tiles(bound, basedir):
+    for point in bound.points():
+        tile = Tile(z=point.z, x=point.x, y=point.y, style="")
+        print(tile.filepath(basedir=basedir))
+
+
+def print_metatiles(bound, basedir):
+    metatiles = bound_to_metatiles(bound, style="")
+    for m in metatiles:
+        print(m.filepath(basedir=basedir))
+
+
 def main():
     args = parse_args()
 
@@ -49,25 +46,11 @@ def main():
     lat = str_to_range(args.lat)
     lng = str_to_range(args.lng)
 
-    bounds = Bounds(bounds=[])
     for zoom in range(min(zooms), max(zooms) + 1):
         ll_bound = LatLongBound(z=zoom, lat1=lat[0], lat2=lat[1], lng1=lng[0], lng2=lng[1])
-        bounds.append(Bound.from_latlong_bound(ll_bound))
-
-    buf = Buffer()
-
-    for point in bounds.points():
-        tile = Tile(z=point.z, x=point.x, y=point.y, style="")
-        if args.meta:
-            metatile = Metatile.from_tile(tile)
-            path = metatile.filepath(args.basedir)
-            if path in buf:
-                continue
-            buf.append(path)
-        else:
-            path = tile.filepath(args.basedir)
-
-        print(path)
+        bound = Bound.from_latlong_bound(ll_bound)
+        f = print_metatiles if args.meta else print_tiles
+        f(bound=bound, basedir=args.basedir)
 
 
 if __name__ == "__main__":
