@@ -8,6 +8,7 @@ import os.path
 import re
 
 from pyosm.point import Point
+from pyosm.buffer import Buffer
 
 # metatile size
 META_SIZE = 8
@@ -197,7 +198,7 @@ def xy_to_hashes(x, y):
 
 
 def bound_to_metatiles(bound, style=""):
-    """Split bound (pyosm.point.Bound) to list of pyosm.metatile.Metatile.
+    """Split bound (pyosm.point.Bound) to list of pyosm.metatile.Metatile. Returns iterator.
 
     >>> from pyosm.point import Bound
     >>> bound = Bound(z=10, min_x=692, min_y=318, max_x=703, max_y=324)
@@ -210,10 +211,10 @@ def bound_to_metatiles(bound, style=""):
     Metatile(z:10, x:696-703, y:320-327, style:mapname)
     """
 
-    metatiles = []
+    buf = Buffer()
     for point in bound.points():
         hashes = xy_to_hashes(point.x, point.y)
         metatile = Metatile(z=bound.z, hashes=hashes, style=style)
-        if metatile not in metatiles:
-            metatiles.append(metatile)
-    return metatiles
+        if metatile not in buf:
+            buf.append(metatile)
+            yield metatile
