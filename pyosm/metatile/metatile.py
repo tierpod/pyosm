@@ -30,16 +30,18 @@ class Metatile(object):
         self.style = style
         self.ext = META_EXT
         self.x, self.y = hashes_to_xy(hashes)
+        self.max_x = self.x + len(self) - 1
+        self.max_y = self.y + len(self) - 1
 
     def __str__(self):
-        mx = self.x + len(self) - 1
-        my = self.y + len(self) - 1
-        return "Metatile(z:{z}, x:{x}-{mx}, y:{y}-{my}, style:{style})".format(mx=mx, my=my,
-                                                                               **self.__dict__)
+        return "Metatile(z:{z}, x:{x}-{max_x}, y:{y}-{max_y}, style:{style})".format(
+            **self.__dict__)
 
     def points(self):
+        """Returns list of all points inside metatile."""
+
         x, y = self.x, self.y
-        return [Point(xx, yy) for xx in range(x, x + len(self)) for yy in range(y, y + len(self))]
+        return [Point(xx, yy) for xx in range(x, self.max_x + 1) for yy in range(y, self.max_y + 1)]
 
     def __iter__(self):
         return iter(self.points())
@@ -75,6 +77,35 @@ class Metatile(object):
         """
 
         return min(META_SIZE, 1 << self.z)
+
+    def __contains__(self, tile):
+        """Returns True if tile (tile.Tile) inside Metatile.
+
+        >>> from pyosm.tile import Tile
+        >>> mt = Metatile.from_tile(Tile(z=10, x=696, y=320, style="", ext=".png"))
+        >>> Tile(z=10, x=696, y=320, style="", ext=".png") in mt
+        True
+        >>> Tile(z=10, x=703, y=327, style="", ext=".png") in mt
+        True
+        >>> Tile(z=10, x=704, y=328, style="", ext=".png") in mt
+        False
+        >>> Tile(z=10, x=695, y=319, style="", ext=".png") in mt
+        False
+        """
+
+        if tile.style != self.style:
+            return False
+
+        if tile.z != self.z:
+            return False
+
+        if tile.x < self.x or tile.x > self.max_x:
+            return False
+
+        if tile.y < self.y or tile.y > self.max_y:
+            return False
+
+        return True
 
     @classmethod
     def from_url(cls, url):
