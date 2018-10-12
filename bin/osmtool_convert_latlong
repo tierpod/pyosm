@@ -4,7 +4,7 @@
 import argparse
 
 from pyosm.metatile import Metatile
-from pyosm.point import latlong_to_zxy, str_to_range, Bound, Bounds, LatLongBound
+from pyosm.point import str_to_range, Bound, Bounds, LatLongBound
 from pyosm.tile import Tile
 
 
