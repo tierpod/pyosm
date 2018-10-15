@@ -18,7 +18,7 @@ $(VENV):
 
 .PHONY: init-dev
 init-dev:
-	pip install -U -r requirements-dev.txt
+	pip install -U -r requirements-dev$(PY).txt
 	pip install -U --editable .
 
 .PHONY: install-user
