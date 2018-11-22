@@ -8,13 +8,18 @@ import os.path
 import re
 
 from pyosm.point import Point
-from pyosm.buffer import Buffer
 
 # metatile size
 META_SIZE = 8
 # metatile extension
 META_EXT = ".meta"
 META_URL_RE = re.compile(r"(\w+)/(\d+)/(\d+)/(\d+)/(\d+)/(\d+)/(\d+)\.meta")
+
+# python>=3.6
+try:
+    xrange
+except NameError:
+    xrange = range
 
 
 class Metatile(object):
@@ -211,10 +216,11 @@ def bound_to_metatiles(bound, style=""):
     Metatile(z:10, x:696-703, y:320-327, style:mapname)
     """
 
-    buf = Buffer()
-    for point in bound.points():
-        hashes = xy_to_hashes(point.x, point.y)
-        metatile = Metatile(z=bound.z, hashes=hashes, style=style)
-        if metatile not in buf:
-            buf.append(metatile)
+    mt_start = Metatile(z=bound.z, hashes=xy_to_hashes(x=bound.min_x, y=bound.min_y), style=style)
+    mt_end = Metatile(z=bound.z, hashes=xy_to_hashes(x=bound.max_x, y=bound.max_y), style=style)
+
+    for x in xrange(mt_start.x, mt_end.x + 1, META_SIZE):
+        for y in xrange(mt_start.y, mt_end.y + 1, META_SIZE):
+            hashes = xy_to_hashes(x, y)
+            metatile = Metatile(z=bound.z, hashes=hashes, style=style)
             yield metatile
