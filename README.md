@@ -3,6 +3,8 @@ pyosmkit: library for building OSM tools
 
 This package contains helpers for building tools around OSM tiles.
 
+**Since 0.11** package name was changed from **pyosm** to **pyosmkit** to avoid pypi conflicts.
+
 Installation
 ------------
 
@@ -18,11 +20,9 @@ Developing
 ----------
 
 ```bash
-# if use virtualenv
 git clone https://github.com/tierpod/pyosmkit.git && cd pyosmkit
 make venv
 source ./venv/bin/activate
-
 make init-dev
 ```
 
