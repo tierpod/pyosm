@@ -3,7 +3,7 @@
 from collections import namedtuple
 import sqlite3
 
-from pyosm.point import Bound, Bounds
+from pyosmkit.point import Bound, Bounds
 
 Metadata = namedtuple("Metadata", "center, format, bounds, minzoom, maxzoom")
 
@@ -123,7 +123,7 @@ def open(file, mode="rb", flip_y=True):
         mode (str): mode in which the file is opened
         flip_y (bool): flip y coordinate?
 
-    >>> from pyosm.point import ZXY
+    >>> from pyosmkit.point import ZXY
     >>> with open("tests/data/0.mbtiles") as mb:
     ...     print(mb)
     ...     print(mb.bounds.for_zoom(12))

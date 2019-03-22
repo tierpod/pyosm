@@ -30,17 +30,17 @@ class Tile(object):
         """Calculates tile filepath using basedir (str).
 
         >>> t = Tile(z=1, x=2, y=3, style="mapname", ext=".png")
-        >>> print(t.filepath("/cache"))
-        /cache/mapname/1/2/3.png
+        >>> t.filepath("/cache")
+        '/cache/mapname/1/2/3.png'
         """
 
         return os.path.join(basedir, self.style, str(self.z), str(self.x), str(self.y) + self.ext)
 
     @classmethod
     def from_metatile(cls, mt, ext=".png"):
-        """Creates new Tile from mt (pyosm.Metatile) object, use ext (str) as extension.
+        """Creates new Tile from mt (pyosmkit.Metatile) object, use ext (str) as extension.
 
-        >>> from pyosm.metatile import Metatile
+        >>> from pyosmkit.metatile import Metatile
         >>> mt = Metatile.from_url("mapname/10/0/0/0/0/0.meta")
         >>> print(Tile.from_metatile(mt))
         Tile(z:10, x:0, y:0, style:mapname, ext:.png)

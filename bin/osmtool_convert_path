@@ -2,8 +2,8 @@
 
 import argparse
 
-from pyosm.tile import Tile
-from pyosm.metatile import Metatile
+from pyosmkit.tile import Tile
+from pyosmkit.metatile import Metatile
 
 
 def parse_args():

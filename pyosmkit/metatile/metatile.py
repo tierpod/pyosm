@@ -7,19 +7,13 @@ https://github.com/openstreetmap/mod_tile
 import os.path
 import re
 
-from pyosm.point import Point
+from pyosmkit.point import Point
 
 # metatile size
 META_SIZE = 8
 # metatile extension
 META_EXT = ".meta"
 META_URL_RE = re.compile(r"(\w+)/(\d+)/(\d+)/(\d+)/(\d+)/(\d+)/(\d+)\.meta")
-
-# python>=3.6
-try:
-    xrange
-except NameError:
-    xrange = range
 
 
 class Metatile(object):
@@ -76,7 +70,7 @@ class Metatile(object):
     def __len__(self):
         """Calculates min size of tiles with data inside metatile.
 
-        >>> from pyosm.tile import Tile
+        >>> from pyosmkit.tile import Tile
         >>> mt = Metatile.from_tile(Tile(z=1, x=1, y=1, style="mapname"))
         >>> print(len(mt))
         2
@@ -87,7 +81,7 @@ class Metatile(object):
     def __contains__(self, tile):
         """Returns True if tile (tile.Tile) inside Metatile.
 
-        >>> from pyosm.tile import Tile
+        >>> from pyosmkit.tile import Tile
         >>> mt = Metatile.from_tile(Tile(z=10, x=696, y=320, style="", ext=".png"))
         >>> Tile(z=10, x=696, y=320, style="", ext=".png") in mt
         True
@@ -114,7 +108,7 @@ class Metatile(object):
         return True
 
     def __eq__(self, metatile):
-        """Return True if metatile (pyosm.metatile.Metatile) equals to Metatile.
+        """Return True if metatile (pyosmkit.metatile.Metatile) equals to Metatile.
 
         >>> mt1 = Metatile.from_url("mapname/10/0/0/33/180/128.meta")
         >>> mt2 = Metatile.from_url("mapname/10/0/0/33/180/128.meta")
@@ -158,9 +152,9 @@ class Metatile(object):
 
     @classmethod
     def from_tile(cls, t):
-        """Create new Metatile from pyosm.point.Tile object.
+        """Create new Metatile from pyosmkit.point.Tile object.
 
-        >>> from pyosm.tile import Tile
+        >>> from pyosmkit.tile import Tile
         >>> tile = Tile(z=10, x=697, y=321, style="mapname")
         >>> print(Metatile.from_tile(tile))
         Metatile(z:10, x:696-703, y:320-327, style:mapname)
@@ -203,9 +197,9 @@ def xy_to_hashes(x, y):
 
 
 def bound_to_metatiles(bound, style=""):
-    """Split bound (pyosm.point.Bound) to list of pyosm.metatile.Metatile. Returns iterator.
+    """Split bound (pyosmkit.point.Bound) to list of pyosmkit.metatile.Metatile. Returns iterator.
 
-    >>> from pyosm.point import Bound
+    >>> from pyosmkit.point import Bound
     >>> bound = Bound(z=10, min_x=692, min_y=318, max_x=703, max_y=324)
     >>> metatiles = bound_to_metatiles(bound, style="mapname")
     >>> for mt in metatiles:
@@ -219,8 +213,8 @@ def bound_to_metatiles(bound, style=""):
     mt_start = Metatile(z=bound.z, hashes=xy_to_hashes(x=bound.min_x, y=bound.min_y), style=style)
     mt_end = Metatile(z=bound.z, hashes=xy_to_hashes(x=bound.max_x, y=bound.max_y), style=style)
 
-    for x in xrange(mt_start.x, mt_end.x + 1, META_SIZE):
-        for y in xrange(mt_start.y, mt_end.y + 1, META_SIZE):
+    for x in range(mt_start.x, mt_end.x + 1, META_SIZE):
+        for y in range(mt_start.y, mt_end.y + 1, META_SIZE):
             hashes = xy_to_hashes(x, y)
             metatile = Metatile(z=bound.z, hashes=hashes, style=style)
             yield metatile

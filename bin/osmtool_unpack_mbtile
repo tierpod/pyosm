@@ -4,7 +4,7 @@ import argparse
 import os
 
 
-from pyosm.mbtile import open as open_mbtile
+from pyosmkit.mbtile import open as open_mbtile
 
 
 def parse_args():

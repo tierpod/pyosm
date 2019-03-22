@@ -3,8 +3,8 @@
 import pytest
 import context  # noqa: F401
 
-from pyosm.point import LatLong
-from pyosm.polygon.raycasting import ray_intersect_seg, is_point_inside
+from pyosmkit.point import LatLong
+from pyosmkit.polygon.raycasting import ray_intersect_seg, is_point_inside
 
 
 @pytest.mark.parametrize("p,a,b,expected", [

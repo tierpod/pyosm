@@ -3,9 +3,9 @@
 
 import argparse
 
-from pyosm.metatile import bound_to_metatiles
-from pyosm.point import str_to_range, Bound, LatLongBound
-from pyosm.tile import Tile
+from pyosmkit.metatile import bound_to_metatiles
+from pyosmkit.point import str_to_range, Bound, LatLongBound
+from pyosmkit.tile import Tile
 
 
 DEFAULT_BASEDIR = "/var/lib/mod_tile"

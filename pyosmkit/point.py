@@ -5,12 +5,6 @@
 import math
 from collections import namedtuple
 
-# python>=3.6
-try:
-    xrange
-except NameError:
-    xrange = range
-
 # Point represents point with x, y (int) coordinates.
 Point = namedtuple("Point", "x, y")
 # LatLong represents latitude and longtitude (float) coordinates.
@@ -22,8 +16,8 @@ ZXY = namedtuple("ZXY", "z, x, y")
 def zxy_to_latlong(z, x, y):
     """Takes z, x, y (int) and convert to LatLong (float values rounded to 4 digits).
 
-    >>> from pyosm.point import zxy_to_latlong
-    >>> print(zxy_to_latlong(10, 697, 321))
+    >>> from pyosmkit.point import zxy_to_latlong
+    >>> zxy_to_latlong(10, 697, 321)
     LatLong(lat=55.5783, long=65.0391)
     """
 
@@ -37,8 +31,8 @@ def zxy_to_latlong(z, x, y):
 def latlong_to_zxy(lat, lng, zoom):
     """Takes lat, lng (float), zoom (int) and convert to ZXY.
 
-    >>> from pyosm.point import latlong_to_zxy
-    >>> print(latlong_to_zxy(55.5783, 65.0391, 10))
+    >>> from pyosmkit.point import latlong_to_zxy
+    >>> latlong_to_zxy(55.5783, 65.0391, 10)
     ZXY(z=10, x=697, y=321)
     """
 
@@ -102,14 +96,14 @@ class Bound(object):
         """Returns True if item (point.ZXY) contains inside Bound.
 
         >>> bound = Bound(z=15, min_x=26248, max_x=26253, min_y=10816, max_y=10821)
-        >>> print(ZXY(z=15, x=26248, y=10821) in bound)
+        >>> ZXY(z=15, x=26248, y=10821) in bound
         True
-        >>> print(ZXY(z=15, x=26249, y=10817) in bound)
+        >>> ZXY(z=15, x=26249, y=10817) in bound
         True
-        >>> print(ZXY(z=15, x=26247, y=10820) in bound)
+        >>> ZXY(z=15, x=26247, y=10820) in bound
         False
         >>> bound = Bound(z=1, min_x=1, max_x=1, min_y=0, max_y=0)
-        >>> print(ZXY(z=1, x=2, y=3) in bound)
+        >>> ZXY(z=1, x=2, y=3) in bound
         False
         """
 
@@ -134,8 +128,8 @@ class Bound(object):
         ZXY(z=4, x=10, y=6)
         """
 
-        for x in xrange(self.min_x, self.max_x + 1):
-            for y in xrange(self.min_y, self.max_y + 1):
+        for x in range(self.min_x, self.max_x + 1):
+            for y in range(self.min_y, self.max_y + 1):
                 yield ZXY(z=self.z, x=x, y=y)
 
     @classmethod
@@ -188,11 +182,11 @@ class Bounds(object):
         ...     Bound(z=12, min_x=3281, max_x=3281, min_y=1352, max_y=1352),
         ...     Bound(z=15, min_x=26248, max_x=26253, min_y=10816, max_y=10821),
         ... ])
-        >>> print(ZXY(z=12, x=3281, y=1352) in bounds)
+        >>> ZXY(z=12, x=3281, y=1352) in bounds
         True
-        >>> print(ZXY(z=15, x=26248, y=10821) in bounds)
+        >>> ZXY(z=15, x=26248, y=10821) in bounds
         True
-        >>> print(ZXY(z=15, x=26247, y=10820) in bounds)
+        >>> ZXY(z=15, x=26247, y=10820) in bounds
         False
         >>> for b in bounds:
         ...     print(b)

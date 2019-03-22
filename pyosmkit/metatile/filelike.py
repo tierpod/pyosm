@@ -23,8 +23,8 @@ import struct
 from collections import OrderedDict, namedtuple
 from io import open as builtin_open
 
-from pyosm.point import Point
-from pyosm.metatile.metatile import META_SIZE
+from pyosmkit.point import Point
+from pyosmkit.metatile.metatile import META_SIZE
 
 # metatile header magic value
 META_MAGIC = b"META"  # in python3 bytes and str different

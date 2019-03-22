@@ -3,7 +3,7 @@
 """
 
 
-from pyosm.polygon import raycasting
+from pyosmkit.polygon import raycasting
 
 
 class Polygon(object):

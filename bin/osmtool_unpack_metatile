@@ -3,7 +3,7 @@
 import argparse
 import os
 
-from pyosm.metatile import open as open_metatile
+from pyosmkit.metatile import open as open_metatile
 
 
 def parse_args():

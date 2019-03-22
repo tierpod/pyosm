@@ -1,13 +1,13 @@
 #!/usr/bin/python
 
 import context  # noqa: F401
-import pyosm.mbtile
-from pyosm.mbtile.filelike import Metadata
-from pyosm.point import Bounds
+import pyosmkit.mbtile
+from pyosmkit.mbtile.filelike import Metadata
+from pyosmkit.point import Bounds
 
 
 def test_metadata():
-    with pyosm.mbtile.open("tests/data/0.mbtiles") as mb:
+    with pyosmkit.mbtile.open("tests/data/0.mbtiles") as mb:
         metadata = mb.metadata
 
     assert metadata == Metadata(center='108.4003,52.03223,9', format='png',
@@ -16,14 +16,14 @@ def test_metadata():
 
 
 def test_bounds():
-    with pyosm.mbtile.open("tests/data/0.mbtiles") as mb:
+    with pyosmkit.mbtile.open("tests/data/0.mbtiles") as mb:
         bounds = mb.bounds
 
-    assert isinstance(bounds, pyosm.point.Bounds)
+    assert isinstance(bounds, pyosmkit.point.Bounds)
 
 
 def test_bounds_zooms():
-    with pyosm.mbtile.open("tests/data/0.mbtiles") as mb:
+    with pyosmkit.mbtile.open("tests/data/0.mbtiles") as mb:
         bounds = mb.bounds
 
     ok = True
@@ -37,7 +37,7 @@ def test_bounds_zooms():
 
 
 def test_readtile():
-    with pyosm.mbtile.open("tests/data/0.mbtiles") as mb:
+    with pyosmkit.mbtile.open("tests/data/0.mbtiles") as mb:
         data = mb.readtile(1, 1, 0)
 
     assert len(data) == 26298

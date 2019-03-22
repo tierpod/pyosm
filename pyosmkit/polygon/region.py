@@ -2,8 +2,9 @@
 """Provides Region object.
 """
 
+
 class Region(object):
-    """Region contains a list of pyosm.polygon.Polygon."""
+    """Region contains a list of pyosmkit.polygon.Polygon."""
 
     def __init__(self, polygons):
         self._polygons = polygons
