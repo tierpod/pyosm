@@ -3,14 +3,19 @@
 # Always prefer setuptools over distutils
 from setuptools import setup, find_packages
 
+with open("README.md", "r") as f:
+    long_description = f.read()
+
 setup(
-    name="pyosm",
+    name="pyosmkit",
     version="0.10",
     description="Library for building OSM tools",
     url="https://github.com/tierpod/pyosm",
     author="Pavel Podkorytov",
     author_email="pod.pavel@gmail.com",
     license='MIT',
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Programming Language :: Python :: 2",

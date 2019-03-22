@@ -43,4 +43,12 @@ clean:
 
 .PHONY: archive
 archive:
-	python setup.py sdist
+	python setup.py sdist bdist_wheel
+
+.PHONY: pypi-test-upload
+pypi-test-upload:
+	twine upload --repository testpypi dist/*
+
+.PHONY: pypi-upload
+pypi-upload:
+	twine upload --repository pypi dist/*

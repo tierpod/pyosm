@@ -9,6 +9,8 @@ Installation
 ```bash
 # where ${TAG} is the git version tag, eg v0.6
 pip install --user git+https://github.com/tierpod/pyosm.git@${TAG}#egg=pyosm
+# or from pypi
+pip install --user pyosmkit
 ```
 
 Developing
