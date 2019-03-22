@@ -10,7 +10,7 @@ setup(
     name="pyosmkit",
     version="0.11",
     description="Library for building OSM tools",
-    url="https://github.com/tierpod/pyosmkit",
+    url="https://github.com/tierpod/pyosm",
     author="Pavel Podkorytov",
     author_email="pod.pavel@gmail.com",
     license='MIT',

@@ -13,14 +13,14 @@ Installation
 pip install --user pyosmkit
 
 # or from github where ${TAG} is the git version tag, eg v0.6
-pip install --user git+https://github.com/tierpod/pyosmkit.git@${TAG}#egg=pyosmkit
+pip install --user git+https://github.com/tierpod/pyosm.git@${TAG}#egg=pyosmkit
 ```
 
 Developing
 ----------
 
 ```bash
-git clone https://github.com/tierpod/pyosmkit.git && cd pyosmkit
+git clone https://github.com/tierpod/pyosm.git && cd pyosm
 make venv
 source ./venv/bin/activate
 make init-dev
