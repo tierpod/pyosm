@@ -7,6 +7,6 @@ build rpm package
 
   ```bash
   make image
-  ./build_python2-pyosmkit.sh
+  make package
   # all RPMS will be located in current directory
   ```
