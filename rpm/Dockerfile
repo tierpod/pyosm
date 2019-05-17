@@ -16,4 +16,4 @@ USER builder
 RUN rpmdev-setuptree
 WORKDIR /home/builder/rpmbuild
 VOLUME [ "/host" ]
-CMD /bin/bash
+CMD rpmbuild -ba

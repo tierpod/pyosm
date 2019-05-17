@@ -2,20 +2,36 @@ IMAGE   := builder-centos7_pyosmkit
 NAME    := python2-pyosmkit
 USERID  := $(shell id -u)
 
-DOCKER_RUN_OPTS = --name $(NAME) -it -v $(PWD):/host
+VER     := $(shell awk '/Version:/ {print $$2}' $(NAME).spec)
+ARCHIVE := $(NAME)-$(VER).tar.gz
 
-.PHONY: shell package image clean
+DOCKER_RUN_OPTS = --rm -it -v $(PWD):/host -v $(HOME)/rpmbuild:/home/builder/rpmbuild
 
-shell:
-	docker run $(DOCKER_RUN_OPTS) $(IMAGE) /bin/bash
+.PHONY: package clean
 
-image:
-	docker build --build-arg=USERID=$(USERID) -t $(IMAGE) .
+$(HOME)/rpmbuild:
+	mkdir -p $@
+
+$(HOME)/rpmbuild/SOURCES/$(ARCHIVE):
+	spectool -R -g $(NAME).spec
 
 package:
-	docker run $(DOCKER_RUN_OPTS) $(IMAGE) /host/build_$(NAME).sh /host/$(NAME).spec
-	docker cp -a $(NAME):/home/builder/rpmbuild/RPMS ./
-	docker rm $(NAME)
+	rpmbuild -ba $(NAME).spec
 
 clean:
-	docker rm $(NAME)
+	-rm $(ARCHIVE)
+
+# docker targets
+.PHONY: docker-shell docker-package docker-image docker-source
+
+docker-source: $(HOME)/rpmbuild
+	docker run $(DOCKER_RUN_OPTS) $(IMAGE) spectool -R -g /host/$(NAME).spec
+
+docker-shell: $(HOME)/rpmbuild
+	docker run $(DOCKER_RUN_OPTS) --user root $(IMAGE) /bin/bash
+
+docker-image:
+	docker build --build-arg=USERID=$(USERID) -t $(IMAGE) .
+
+docker-package: $(HOME)/rpmbuild docker-source
+	docker run $(DOCKER_RUN_OPTS) $(IMAGE) rpmbuild -ba /host/$(NAME).spec
