@@ -1,12 +1,11 @@
 build rpm package
 =================
 
-* Use your own build server: download spec file to SPECS directory and run "build_python2-pyosmkit.sh"
+* Use your own build server: download spec file to SPECS directory and run "make package"
 
 * Use local docker container:
 
   ```bash
-  make image
-  make package
-  # all RPMS will be located in current directory
+  make docker-image docker-package
+  # all RPMS will be located in $HOME/rpmbuild
   ```
