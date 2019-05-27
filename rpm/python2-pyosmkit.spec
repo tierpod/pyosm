@@ -16,7 +16,7 @@ BuildArch:      noarch
 Library for building OSM tools.
 
 %package -n python2-%{srcname}
-Summary:        %{summary}
+Summary:        Library for building OSM tools
 BuildRequires:  python2-devel
 %{?python_provide:%python_provide python2-%{srcname}}
 
