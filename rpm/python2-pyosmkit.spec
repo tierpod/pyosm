@@ -18,6 +18,7 @@ Library for building OSM tools.
 %package -n python2-%{srcname}
 Summary:        Library for building OSM tools
 BuildRequires:  python2-devel
+BuildRequires:  python-setuptools
 %{?python_provide:%python_provide python2-%{srcname}}
 
 %description -n python2-%{srcname}
