@@ -11,18 +11,18 @@ test:
 .PHONY: doctest
 doctest:
 	find $(PACKAGE) -name '*.py' -print | xargs python -m doctest
-	python -m doctest README.md
+	python$(PY) -m doctest README.md
 
 $(VENV):
-	virtualenv -p /usr/bin/python$(PY) $(VENV)
+	python$(PY) -m venv $@
 
 .PHONY: init-dev
 init-dev:
-	pip install -U -r requirements-dev$(PY).txt
-	pip install -U --editable .
+	python$(PY) -m pip install -U -r requirements-dev$(PY).txt
+	python$(PY) -m pip install -U --editable .
 
 .PHONY: install
-	python setup.py install
+	python$(PY) setup.py install
 
 .PHONY: clean
 clean:
@@ -35,7 +35,7 @@ clean:
 
 .PHONY: archive
 archive:
-	python setup.py sdist bdist_wheel
+	python$(PY) setup.py sdist bdist_wheel
 
 .PHONY: pypi-test-upload
 pypi-test-upload:
