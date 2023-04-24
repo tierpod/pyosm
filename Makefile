@@ -1,5 +1,3 @@
-# default python version. For using python2, use:
-# PY=2 make test
 PY      ?= 3
 PACKAGE := pyosmkit
 VENV    := venv
@@ -28,9 +26,8 @@ init-dev:
 clean:
 	# clean setuptools stuff
 	rm -rf build dist *.egg-info
-	# clean python2-stuff
+	# clean python stuff
 	find ./ -name '*.pyc' -delete
-	# clean python3-stuff
 	find ./ -name __pycache__ -type d -print | xargs rm -rf
 
 .PHONY: archive
