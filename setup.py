@@ -8,7 +8,7 @@ with open("README.md", "r") as f:
 
 setup(
     name="pyosmkit",
-    version="0.11",
+    version="0.12",
     description="Library for building OSM tools",
     url="https://github.com/tierpod/pyosm",
     author="Pavel Podkorytov",
@@ -18,7 +18,6 @@ setup(
     long_description_content_type="text/markdown",
     classifiers=[
         "Development Status :: 3 - Alpha",
-        "Programming Language :: Python :: 2",
         "Programming Language :: Python :: 3",
     ],
     packages=find_packages(),

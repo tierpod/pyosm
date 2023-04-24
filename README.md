@@ -5,6 +5,8 @@ This package contains helpers for building tools around OSM tiles.
 
 **Since 0.11** package name was changed from **pyosm** to **pyosmkit** to avoid pypi conflicts.
 
+**Since 0.12** python 2 support is dropped.
+
 Installation
 ------------
 
