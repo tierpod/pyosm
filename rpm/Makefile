@@ -1,10 +1,10 @@
-NAME    := python2-pyosmkit
+NAME    := python-pyosmkit
 SPEC    ?= $(NAME).spec
 DOCKER  ?= 1
 VER     := $(shell awk '/Version:/ {print $$2}' $(SPEC))
 ARCHIVE := $(NAME)-$(VER).tar.gz
 USERID  := $(shell id -u)
-IMAGE   := builder-centos7_pyosmkit
+IMAGE   := builder-$(NAME)_ol9
 
 ifeq ($(DOCKER),1)
 CMD_PREFIX := docker run --rm -it -v $(PWD):/host:ro -v $(HOME)/rpmbuild:/home/builder/rpmbuild:rw $(IMAGE)

@@ -1,12 +1,12 @@
-FROM centos:7
+FROM oraclelinux:9
 
 ARG USERID
 ENV USERID $USERID
 
 # Install main dependencies
-RUN yum install -y epel-release rpmdevtools make yum-utils '@Development Tools' \
-    python-devel python-setuptools && \
-    yum clean all
+RUN dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm \
+        rpmdevtools make yum-utils '@Development Tools' python3-devel \
+    && dnf clean all
 
 # Create builder group and user
 RUN groupadd -g $USERID builder && \
