@@ -111,6 +111,23 @@ class MBTileFile(object):
         # TODO: return str or bytes?
         return res["tile_data"]
 
+    def readtiles(self):
+        """Read all tiles saved in mbtile"""
+
+        cur = self._conn.cursor()
+        cur.execute("SELECT zoom_level, tile_column, tile_row, tile_data FROM tiles;")
+        res = cur.fetchall()
+        if not res:
+            raise ValueError("data not found for given (z, x, y)")
+
+        tiles = []
+        for tile in res:
+            z, x, y, data = tile
+            if self.flip_y:
+                y = flip_y_coord(z, y)
+            tiles.append((z, x, y, data))
+        return tiles
+
 
 def open(file, mode="rb", flip_y=True):
     """Wrapper around sqlite3.connect() functions. Returns MBTile file-like object.

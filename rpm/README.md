@@ -3,7 +3,7 @@ build rpm package
 
 * Use your own build server: download spec file to SPECS directory and run
 
-  ```
+  ```bash
   make DOCKER=0 rpm
   ```
 

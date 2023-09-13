@@ -1,5 +1,3 @@
-# default python version. For using python2, use:
-# PY=2 make test
 PY      ?= 3
 PACKAGE := pyosmkit
 VENV    := venv
@@ -11,31 +9,30 @@ test:
 .PHONY: doctest
 doctest:
 	find $(PACKAGE) -name '*.py' -print | xargs python -m doctest
-	python -m doctest README.md
+	python$(PY) -m doctest README.md
 
 $(VENV):
-	virtualenv -p /usr/bin/python$(PY) $(VENV)
+	python$(PY) -m venv $@
 
 .PHONY: init-dev
 init-dev:
-	pip install -U -r requirements-dev$(PY).txt
-	pip install -U --editable .
+	python$(PY) -m pip install -U -r requirements-dev$(PY).txt
+	python$(PY) -m pip install -U --editable .
 
 .PHONY: install
-	python setup.py install
+	python$(PY) setup.py install
 
 .PHONY: clean
 clean:
 	# clean setuptools stuff
 	rm -rf build dist *.egg-info
-	# clean python2-stuff
+	# clean python stuff
 	find ./ -name '*.pyc' -delete
-	# clean python3-stuff
 	find ./ -name __pycache__ -type d -print | xargs rm -rf
 
 .PHONY: archive
 archive:
-	python setup.py sdist bdist_wheel
+	python$(PY) setup.py sdist bdist_wheel
 
 .PHONY: pypi-test-upload
 pypi-test-upload:

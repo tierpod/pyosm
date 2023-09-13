@@ -2,7 +2,7 @@
 %global gitname pyosm
 
 Name:           python-%{srcname}
-Version:        0.11
+Version:        0.12
 Release:        1%{?dist}
 Summary:        Example python module
 
@@ -15,28 +15,28 @@ BuildArch:      noarch
 %description
 Library for building OSM tools.
 
-%package -n python2-%{srcname}
+%package -n python3-%{srcname}
 Summary:        Library for building OSM tools
-BuildRequires:  python2-devel
-BuildRequires:  python-setuptools
-%{?python_provide:%python_provide python2-%{srcname}}
+BuildRequires:  python3-devel
+BuildRequires:  python3-setuptools
+%{?python_provide:%python_provide python3-%{srcname}}
 
-%description -n python2-%{srcname}
+%description -n python3-%{srcname}
 Library for building OSM tools.
 
 %prep
 %autosetup -n %{gitname}-%{version}
 
 %build
-%py2_build
+%py3_build
 
 %install
-%py2_install
+%py3_install
 
 # Note that there is no %%files section for the unversioned python module
-%files -n python2-%{srcname}
+%files -n python3-%{srcname}
 %license LICENSE
 %doc README.md
-%{python2_sitelib}/%{srcname}-*.egg-info/
-%{python2_sitelib}/%{srcname}/
+%{python3_sitelib}/%{srcname}-*.egg-info/
+%{python3_sitelib}/%{srcname}/
 %{_bindir}/osmtool_*

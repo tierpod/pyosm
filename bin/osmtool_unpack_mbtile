@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import argparse
 import os
@@ -12,11 +12,13 @@ def parse_args():
     parser.add_argument("-o", "--outdir", required=True, help="output directory")
     parser.add_argument("-e", "--ext", default=".png", help="output files extension")
     parser.add_argument("-c", "--center", action="store_true", help="extract only center tiles")
+    parser.add_argument("-a", "--all", action="store_true",
+                        help="extract all existent tiles instead of based on bounds")
     parser.add_argument("MBTILE", nargs="+", help="input mbtile files")
     return parser.parse_args()
 
 
-def unpack(mb, out, ext, center):
+def unpack(mb, out, ext, center, all_tiles):
     for zoom in range(mb.metadata.minzoom, mb.metadata.maxzoom + 1):
         bound = mb.bounds.for_zoom(zoom)
         # unpack only center tiles
@@ -25,7 +27,12 @@ def unpack(mb, out, ext, center):
             y = bound.min_y + (bound.max_y - bound.min_y) / 2
             data = mb.readtile(z=zoom, x=x, y=y)
             make_dir_and_write(out=out, ext=ext, data=data, z=zoom, x=x, y=y)
-        # unpack all tiles
+        # unpack all tiles from mbtile
+        elif all_tiles:
+            all_data = mb.readtiles()
+            for zoom, x, y, data in all_data:
+                make_dir_and_write(out=out, ext=ext, data=data, z=zoom, x=x, y=y)
+        # unpack tiles based on bounds from mbtile metadata
         else:
             for p in bound.points():
                 data = mb.readtile(z=p.z, x=p.x, y=p.y)
@@ -47,7 +54,7 @@ def main():
     for path in args.MBTILE:
         print("unpack %s -> %s" % (path, args.outdir))
         with open_mbtile(path, "rb") as mb:
-            unpack(mb, args.outdir, args.ext, args.center)
+            unpack(mb, args.outdir, args.ext, args.center, args.all)
 
 
 if __name__ == "__main__":
